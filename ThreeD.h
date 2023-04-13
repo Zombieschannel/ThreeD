@@ -31,3 +31,4 @@
 #include "Framebuffer.h"
 #include "RenderBuffer.h"
 #include "Maths.h"
+#include "SmartShaderGeneratingSystem.h"
