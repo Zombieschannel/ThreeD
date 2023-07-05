@@ -19,11 +19,10 @@ namespace DDD
         unsigned int ID = 0;
         void setBuffer()
         {
-            if (ID)
+            if (!ID)
             {
-                GLCall(glDeleteBuffers(1, &ID));
+                GLCall(glGenBuffers(1, &ID));
             }
-            GLCall(glGenBuffers(1, &ID));
         }
         VBO()
         {
@@ -144,12 +143,12 @@ namespace DDD
         unsigned char layoutFlags;
     public:
         CustomVertexBuffer3D()
-            : layoutFlags(Position), vertexCount(0), vertexSize(getComponentSize(Position))
+            : layoutFlags(Position), vertexCount(0), vertexSize(getComponentSize(Position) * sizeof(float))
         {
             setBuffer();
         }
         CustomVertexBuffer3D(sf::PrimitiveType type)
-            : layoutFlags(Position), vertexCount(0), vertexSize(getComponentSize(Position))
+            : layoutFlags(Position), vertexCount(0), vertexSize(getComponentSize(Position) * sizeof(float))
         {
             setBuffer();
         }
@@ -167,7 +166,7 @@ namespace DDD
         }
         virtual unsigned int getVertexCount() const
         {
-            return vertices.size() / getVertexSize();
+            return vertices.size() / getComponentsSize();
         }
         virtual unsigned int getVertexSize() const
         {
@@ -175,11 +174,11 @@ namespace DDD
         }
         virtual float& operator[] (int index)
         {
-            return vertices[index * getVertexSize()];
+            return vertices[index * getComponentsSize()];
         }
         virtual const float& operator[] (int index) const
         {
-            return vertices[index * getVertexSize()];
+            return vertices[index * getComponentsSize()];
         }
         virtual void clear()
         {
@@ -188,7 +187,44 @@ namespace DDD
         virtual void resize(unsigned int vertexCount)
         {
             this->vertexCount = vertexCount;
-            vertices.resize(vertexCount * getVertexSize());
+            vertices.resize(vertexCount * getComponentsSize());
+        }
+        unsigned int getComponentsSize() const
+        {
+            return getVertexSize() / sizeof(float);
+        }
+        void setVertex(unsigned int index, const Vertex3D v)
+        {
+            index *= getComponentsSize();
+            unsigned char offset = 0;
+            if (layoutFlags & Position)
+            {
+                vertices[index + offset] = v.getPosition().x;
+                vertices[index + offset + 1] = v.getPosition().y;
+                vertices[index + offset + 2] = v.getPosition().z;
+                offset += getComponentSize(Position);
+            }
+            if (layoutFlags & Color)
+            {
+                vertices[index + offset] = v.getColor().r;
+                vertices[index + offset + 1] = v.getColor().g;
+                vertices[index + offset + 2] = v.getColor().b;
+                vertices[index + offset + 3] = v.getColor().a;
+                offset += getComponentSize(Color);
+            }
+            if (layoutFlags & TexCoord)
+            {
+                vertices[index + offset] = v.getTexCoord().x;
+                vertices[index + offset + 1] = v.getTexCoord().y;
+                offset += getComponentSize(TexCoord);
+            }
+            if (layoutFlags & Normals)
+            {
+                vertices[index + offset] = v.getNormal().x;
+                vertices[index + offset + 1] = v.getNormal().y;
+                vertices[index + offset + 2] = v.getNormal().z;
+                offset += getComponentSize(Normals);
+            }
         }
         unsigned char getComponentSize(Layout layout) const
         {
@@ -249,12 +285,13 @@ namespace DDD
                     if (layoutFlags & (1 << i))
                         vertexSize += getComponentSize(i);
                 }
+                vertexSize *= sizeof(float);
                 resize(vertexCount);
             }
         }
         virtual void setLayout() const
         {
-            unsigned char offset;
+            unsigned char offset = 0;
             for (int i = 0; i < 8; i++)
             {
                 if (layoutFlags & (1 << i))

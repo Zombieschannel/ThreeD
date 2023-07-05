@@ -4,6 +4,7 @@
 #include "RenderTarget.h"
 #include "PrimitiveType.h"
 #include "Drawable.h"
+#include "Maths.h"
 #include <vector>
 namespace DDD
 {
@@ -33,6 +34,28 @@ namespace DDD
 		{
 			return model->vao;
 		}
+		CustomVertexBuffer3D& getVBO()
+		{
+			return model->vbo;
+		}
+		//void recalculateNormals()
+		//{
+		//	for (int i = 0; i < model->getVertexBuffer().getVertexCount() / 3; i++)
+		//	{
+		//		sf::Vector3f normal;
+		//		sf::Vector3f pos1 = getTransform().transformPoint(model->vbo[i * 3].getPosition());
+		//		sf::Vector3f pos2 = getTransform().transformPoint(model->vbo[i * 3 + 1].getPosition());
+		//		sf::Vector3f pos3 = getTransform().transformPoint(model->vbo[i * 3 + 2].getPosition());
+		//		normal = calculateNormal(pos1, pos2, pos3);
+		//		//sf::err() << normal.x << std::endl;
+		//		//sf::err() << normal.y << std::endl;
+		//		//sf::err() << normal.z << std::endl;
+		//		model->vbo[i * 3].setNormal(normal);
+		//		model->vbo[i * 3 + 1].setNormal(normal);
+		//		model->vbo[i * 3 + 2].setNormal(normal);
+		//	}
+		//	model->vao.setVBO(model->vbo);
+		//}
 	private:
 		virtual void draw(RenderTarget3D& target, RenderStates3D states) const
 		{

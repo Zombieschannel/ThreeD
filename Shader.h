@@ -16,10 +16,10 @@ namespace DDD
         {
             Vertex = GL_VERTEX_SHADER,
             Fragment = GL_FRAGMENT_SHADER,
-#if defined(GLES31) || defined(GLES32) || not __ANDROID__
+#if defined(GLES31) || defined(GLES32) || not defined(__ANDROID__)
             Compute = GL_COMPUTE_SHADER,
 #endif
-#if not __ANDROID__
+#if not defined (__ANDROID__)
             Geometry = GL_GEOMETRY_SHADER,
             TessControl = GL_TESS_CONTROL_SHADER,
             TessEvaluation = GL_TESS_EVALUATION_SHADER
@@ -125,7 +125,7 @@ namespace DDD
         }
         void setUniform(const std::string& name, const Transform3D& v) const
         {
-#if defined(GLES20)
+#ifdef GLES20
             GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, v.transpose().getMatrix()));
 #else
             GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_TRUE, v.getMatrix()));

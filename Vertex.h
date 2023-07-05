@@ -122,6 +122,10 @@ namespace DDD
 		{
 			return sf::Vector2f(texCoord[0], texCoord[1]);
 		}
+		sf::Vector3f getNormal() const
+		{
+			return sf::Vector3f(normals[0], normals[1], normals[2]);
+		}
 		float getTexID() const
 		{
 			return texID;

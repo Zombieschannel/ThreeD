@@ -13,7 +13,7 @@ namespace DDD
 			Color = GL_COLOR_ATTACHMENT0,
 			Depth = GL_DEPTH_ATTACHMENT,
 			Stencil = GL_STENCIL_ATTACHMENT,
-#if not defined (GLES20)
+#ifndef GLES20
 			DepthStencil = GL_DEPTH_STENCIL_ATTACHMENT,
 #endif
 		};

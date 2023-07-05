@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "VertexArray.h"
+#include <fstream>
 #include <string>
 namespace DDD
 {
@@ -9,7 +10,7 @@ namespace DDD
 	private:
 		VertexArray3D vao;
 		friend class Mesh3D;
-		VertexBuffer3D vbo;
+		CustomVertexBuffer3D vbo;
 		DDD::ColorF color = DDD::ColorF(1.f);
 		void GetVector(sf::Vector3f& vec, const char* start, unsigned int size)
 		{
@@ -126,18 +127,19 @@ namespace DDD
 				
 				if (!scanMode)
 				{
+					int vertexSize = vbo.getVertexSize();
 					std::vector<sf::Vector3i> ind;
 					getFace(ind, &start[2], size - 2);
 					int count = 0;
 					for (int i = 0; i < ind.size() - 2; i++)
 					{
-						float random = (float)rand() / RAND_MAX / 2;
-						color = DDD::ColorF(random + 0.5);
-						vbo[vboSize + count] = Vertex3D(pos1[ind[0].x - 1], color, tex1.size() != 0 ? tex1[ind[0].y - 1] : sf::Vector2f(0, 0), nor1.size() != 0 ? nor1[ind[0].z - 1] : sf::Vector3f(0, 0, 0));
+						//float random = (float)rand() / RAND_MAX / 2;
+						//color = DDD::ColorF(random + 0.5);
+						vbo.setVertex(vboSize + count, Vertex3D(pos1[ind[0].x - 1], color, tex1.size() != 0 ? tex1[ind[0].y - 1] : sf::Vector2f(0, 0), nor1.size() != 0 ? nor1[ind[0].z - 1] : sf::Vector3f(0, 0, 0)));
 						count++;
-						vbo[vboSize + count] = Vertex3D(pos1[ind[i + 1].x - 1], color, tex1.size() != 0 ? tex1[ind[i + 1].y - 1] : sf::Vector2f(0, 0), nor1.size() != 0 ? nor1[ind[i + 1].z - 1] : sf::Vector3f(0, 0, 0));
+						vbo.setVertex(vboSize + count, Vertex3D(pos1[ind[i + 1].x - 1], color, tex1.size() != 0 ? tex1[ind[i + 1].y - 1] : sf::Vector2f(0, 0), nor1.size() != 0 ? nor1[ind[i + 1].z - 1] : sf::Vector3f(0, 0, 0)));
 						count++;
-						vbo[vboSize + count] = Vertex3D(pos1[ind[i + 2].x - 1], color, tex1.size() != 0 ? tex1[ind[i + 2].y - 1] : sf::Vector2f(0, 0), nor1.size() != 0 ? nor1[ind[i + 2].z - 1] : sf::Vector3f(0, 0, 0));
+						vbo.setVertex(vboSize + count, Vertex3D(pos1[ind[i + 2].x - 1], color, tex1.size() != 0 ? tex1[ind[i + 2].y - 1] : sf::Vector2f(0, 0), nor1.size() != 0 ? nor1[ind[i + 2].z - 1] : sf::Vector3f(0, 0, 0)));
 						count++;
 					}
 				}
@@ -160,7 +162,10 @@ namespace DDD
 			
 		}
 	public:
-		
+		Model3D()
+		{
+			vbo.setLayoutFlags(CustomVertexBuffer3D::Position | CustomVertexBuffer3D::TexCoord | CustomVertexBuffer3D::Normals | CustomVertexBuffer3D::Custom1);
+		}
 		bool loadFromStream(sf::InputStream& load1)
 		{
 			/*std::ifstream load1;
@@ -334,13 +339,13 @@ namespace DDD
 			vao.setVBO(vbo);
 			return 1;
 		}
-		void setColor(const DDD::ColorF& color)
-		{
-			this->color = color;
-			for (int i = 0; i < vbo.getVertexCount(); i++)
-				vbo[i].setColor(color);
-			vao.setVBO(vbo);
-		}
+		//void setColor(const DDD::ColorF& color)
+		//{
+		//	this->color = color;
+		//	for (int i = 0; i < vbo.getVertexCount(); i++)
+		//		vbo[i].setColor(color);
+		//	vao.setVBO(vbo);
+		//}
 		bool loadFromFile(const std::string& filename)
 		{
 			sf::FileInputStream load1;
@@ -354,11 +359,40 @@ namespace DDD
 			load1.open(file.c_str(), file.size());
 			return loadFromStream(load1);
 		}
+		bool saveToFile(const std::string& file)
+		{
+			std::ofstream output;
+			output.open(file);
+			if (output.is_open())
+			{
+				output << "o Model\n";
+				for (int i = 0; i < getVertexBuffer().getVertexCount(); i++)
+					output << "v " << (&getVertexBuffer()[i])[0] << " " << (&getVertexBuffer()[i])[1] << " " << (&getVertexBuffer()[i])[2] << "\n";
+				for (int i = 0; i < getVertexBuffer().getVertexCount(); i++)
+					output << "vt " << (&getVertexBuffer()[i])[3] << " " << (&getVertexBuffer()[i])[4] << "\n";
+				for (int i = 0; i < getVertexBuffer().getVertexCount(); i++)
+					output << "vn " << (&getVertexBuffer()[i])[5] << " " << (&getVertexBuffer()[i])[6] << " " << (&getVertexBuffer()[i])[7] << "\n";
+				for (int i = 0; i < getVertexBuffer().getVertexCount() / 3; i++)
+				{
+					output << "f ";
+					for (int j = 0; j < 3; j++)
+					{
+						std::string x = std::to_string(i * 3 + j + 1) + "/" + std::to_string(i * 3 + j + 1) + "/" + std::to_string(i * 3 + j + 1);
+						output << x << " ";
+					}
+					output << "\n";
+				}
+			}
+			else
+				return 0;
+			output.close();
+			return 1;
+		}
 		const DDD::VertexArray3D& getVertexArray() const
 		{
 			return vao;
 		}
-		DDD::VBO& getVertexBuffer()
+		DDD::CustomVertexBuffer3D& getVertexBuffer()
 		{
 			return vbo;
 		}

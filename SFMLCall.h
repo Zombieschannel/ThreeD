@@ -5,7 +5,7 @@
 x
 void resetGLstates()
 {
-#if not defined(GLES20)
+#ifndef GLES20
 	GLCall(glBindVertexArray(0));
 #endif
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));

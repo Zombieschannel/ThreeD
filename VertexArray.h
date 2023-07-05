@@ -10,13 +10,13 @@ namespace DDD
 		VBO* vertexBuffer = nullptr;
 		void setBuffers()
 		{
-#if not defined(GLES20)
-			if (ID)
+#ifndef GLES20
+			if (!ID)
 			{
-				GLCall(glDeleteVertexArrays(1, &ID));
+				GLCall(glGenVertexArrays(1, &ID));
 			}
-			GLCall(glGenVertexArrays(1, &ID));
 			GLCall(glBindVertexArray(ID));
+
 #endif
 
 			VBO::BufferData(*vertexBuffer);
@@ -29,7 +29,7 @@ namespace DDD
 		VertexArray3D()
 			: ID(0)
 		{
-#if not defined(GLES20)
+#ifndef GLES20
 			GLCall(glGenVertexArrays(1, &ID));
 #endif
 		}
@@ -40,7 +40,7 @@ namespace DDD
 		}
 		~VertexArray3D()
 		{
-#if not defined(GLES20)
+#ifndef GLES20
 			GLCall(glDeleteVertexArrays(1, &ID));
 #endif
 		}
@@ -66,7 +66,7 @@ namespace DDD
 		}
 		static void Bind(const VertexArray3D& vao)
 		{
-#if not defined(GLES20)
+#ifndef GLES20
 			GLCall(glBindVertexArray(vao.ID));
 #else
 			if (vao.vertexBuffer)

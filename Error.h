@@ -1,7 +1,7 @@
 #pragma once
 #include "OGL.h"
 #include <iostream>
-#if __ANDROID__
+#ifdef __ANDROID__
 #define ASSERT(x) x;
 #else
 #define ASSERT(x) if (!(x)) __debugbreak();
