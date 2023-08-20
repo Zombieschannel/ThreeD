@@ -11,4 +11,6 @@ void resetGLstates()
 	GLCall(glBindBuffer(GL_ARRAY_BUFFER, 0));
 	GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0));
 	GLCall(glUseProgram(0));
+	//GLCall(glActiveTexture(GL_TEXTURE0));
+	//GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 }

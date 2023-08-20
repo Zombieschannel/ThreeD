@@ -7,11 +7,13 @@ namespace DDD
 	{
 		sf::Vector3f position;
 		sf::Vector3f rotation;
+		sf::Vector3f origin;
 		Transform3D transform;
 		sf::IntRect viewPort;
 		void setup()
 		{
 			transform = Transform3D();
+			transform.translate(origin);
 			transform.rotate(-rotation);
 			transform.translate(-position);
 		}
@@ -21,37 +23,44 @@ namespace DDD
 		{
 
 		}
-		View3D(sf::IntRect viewPort)
+		View3D(const sf::IntRect& viewPort)
 			: position(sf::Vector3f(0, 0, 0)), rotation(sf::Vector3f(0, 0, 0))
 		{
 			
 			setViewPort(viewPort);
 			setup();
 		}
-		void create(sf::IntRect viewPort, sf::Vector3f position, sf::Vector3f rotation)
+		void create(const sf::IntRect& viewPort, const sf::Vector3f& position, const sf::Vector3f& rotation, const sf::Vector3f& origin)
 		{
 			this->position = position;
 			this->rotation = rotation;
+			this->origin = origin;
 			setViewPort(viewPort);
 			setup();
 		}
-		void setPosition(sf::Vector3f position)
+		void setPosition(const sf::Vector3f& position)
 		{
 			this->position = position;
 			setup();
 		}
-		void move(sf::Vector3f move)
+		void move(const sf::Vector3f& move)
 		{
 			this->position += move;
 			setup();
 		}
 
-		void setRotation(sf::Vector3f orientation)
+		void setOrigin(const sf::Vector3f& origin)
+		{
+			this->origin = origin;
+			setup();
+		}
+
+		void setRotation(const sf::Vector3f& orientation)
 		{
 			this->rotation = orientation;
 			setup();
 		}
-		void rotate(sf::Vector3f rotation)
+		void rotate(const sf::Vector3f& rotation)
 		{
 			this->rotation += rotation;
 			setup();
@@ -68,6 +77,12 @@ namespace DDD
 			setup();
 		}
 
+		void setOrigin(float x, float y, float z)
+		{
+			origin = sf::Vector3f(x, y, z);
+			setup();
+		}
+
 		void setRotation(float x, float y, float z)
 		{
 			rotation = sf::Vector3f(x, y, z);
@@ -78,7 +93,7 @@ namespace DDD
 			rotation += sf::Vector3f(x, y, z);
 			setup();
 		}
-		void setViewPort(sf::IntRect rect)
+		void setViewPort(const sf::IntRect& rect)
 		{
 			viewPort = rect;
 			GLCall(glViewport(rect.left, rect.top, rect.width, rect.height));
@@ -91,6 +106,10 @@ namespace DDD
 		const sf::Vector3f& getRotation() const
 		{
 			return rotation;
+		}
+		const sf::Vector3f& getOrigin() const
+		{
+			return origin;
 		}
 		const Transform3D& getTransform() const
 		{

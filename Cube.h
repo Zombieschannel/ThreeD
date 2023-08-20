@@ -7,12 +7,10 @@ namespace DDD
 	class Cube3D : public Shape3D, public Drawable3D
 	{
 	public:
-        Cube3D(const sf::Vector3f& Size = sf::Vector3f(0, 0, 0))
-            :size(Size)
+        Cube3D()
         {
             fillColor.resize(getPointCount(), sf::Color(255, 255, 255));
             coord.resize(6);
-
             update();
         }
         ~Cube3D()

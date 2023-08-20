@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics/Image.hpp>
+#include <SFML/Window/Window.hpp>
 #include "Error.h"
 #include "ColorF.h"
 namespace DDD
@@ -55,6 +56,10 @@ namespace DDD
 		}
 	public:
 		Texture3D()
+		{
+		}
+		Texture3D(unsigned int _ID, unsigned int _slot, Type _type)
+			: ID(_ID), slot(_slot), type(_type)
 		{
 		}
 		~Texture3D()
@@ -235,6 +240,10 @@ namespace DDD
 		const sf::Vector2u& getSize() const
 		{
 			return size;
+		}
+		void setSize(const sf::Vector2u& size)
+		{
+			this->size = size;
 		}
 		void setSlot(unsigned int slot)
 		{

@@ -1,4 +1,5 @@
 #pragma once
+#include <SFML/Graphics/PrimitiveType.hpp>
 #include "Vertex.h"
 #include <vector>
 #include "Error.h"
@@ -25,9 +26,6 @@ namespace DDD
             }
         }
         VBO()
-        {
-        }
-        VBO(sf::PrimitiveType type)
         {
         }
         virtual const void* getFirstVertex() const = 0;

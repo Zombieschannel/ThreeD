@@ -1,9 +1,11 @@
 #pragma once
 #include "OGL.h"
+#include <SFML/System/Err.hpp>
 #include <iostream>
 #ifdef __ANDROID__
 #define ASSERT(x) x;
 #else
+#define ASSERT(x) x;
 #define ASSERT(x) if (!(x)) __debugbreak();
 #endif
 
@@ -19,7 +21,7 @@
 
 static void GLClearError()
 {
-	while (glGetError() != GL_NO_ERROR);
+	for (short i = 0; i < INT16_MAX - 1 && (glGetError() != GL_NO_ERROR); i++);
 }
 static bool GLLogCall()
 {

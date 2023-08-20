@@ -66,7 +66,6 @@ namespace DDD
         }
         static Transform3D Perspective(float fov, float aspect, float near, float far)
         {
-
             float tanHalfFovy = tan((fov * 0.0174533) / 2);
             float a = 1 / (aspect * tanHalfFovy);
             float b = 1 / tanHalfFovy;
@@ -74,9 +73,9 @@ namespace DDD
             float d = -(2 * far * near) / (far - near);
 
             return Transform3D(a, 0, 0, 0,
-                                0, b, 0, 0,
-                                0, 0, c, d,
-                                0, 0, -1, 0);
+                               0, b, 0, 0,
+                               0, 0, c, d,
+                               0, 0, -1, 0);
         }
         static Transform3D Ortho(float left, float right, float top, float bottom, float near, float far)
         {

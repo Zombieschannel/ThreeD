@@ -1,5 +1,6 @@
 #pragma once
 #include "OGL.h"
+#include <SFML/System.hpp>
 #include <iostream>
 #include "Error.h"
 #include "Transform.h"
@@ -154,6 +155,18 @@ namespace DDD
         void setUniform(const std::string& name, const sf::Vector3f& v) const
         {
             GLCall(glUniform3f(GetUniformLocation(name), v.x, v.y, v.z));
+        }
+        void setUniform(const std::string& name, const sf::Vector2f& v) const
+        {
+            GLCall(glUniform2f(GetUniformLocation(name), v.x, v.y));
+        }
+        void setUniform(const std::string& name, const sf::Vector2i& v) const
+        {
+            GLCall(glUniform2i(GetUniformLocation(name), v.x, v.y));
+        }
+        void setUniform(const std::string& name, const sf::Vector3i& v) const
+        {
+            GLCall(glUniform3i(GetUniformLocation(name), v.x, v.y, v.z));
         }
         void setUniformArray(const std::string& name, std::vector<float> arr) const
         {
