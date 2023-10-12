@@ -37,7 +37,7 @@ namespace DDD
 		{
 
 		}
-		Vertex3D(const sf::Vector3f& pos, const ColorF& col, const sf::Vector2f& tex, const sf::Vector3f& normal, const float& ID)
+		Vertex3D(const sf::Vector3f& pos, const ColorF& col, const sf::Vector2f& tex, const sf::Vector3f& normal, const float ID)
 			: position{ pos.x, pos.y, pos.z }, color{ col.r, col.g, col.b, col.a }, texCoord{ tex.x, tex.y }, normals{ normal.x, normal.y, normal.z }, texID(ID)
 		{
 
@@ -46,7 +46,7 @@ namespace DDD
 		{
 
 		}
-		void setPosition(float x, float y, float z)
+		void setPosition(const float x, const float y, const float z)
 		{
 			position[0] = x;
 			position[1] = y;
@@ -58,7 +58,7 @@ namespace DDD
 			position[1] = pos.y;
 			position[2] = pos.z;
 		}
-		void move(float x, float y, float z)
+		void move(const float x, const float y, const float z)
 		{
 			position[0] += x;
 			position[1] += y;
@@ -84,7 +84,7 @@ namespace DDD
 			color[2] += col.b;
 			color[3] += col.a;
 		}
-		void setTexCoord(const float& x, const float& y)
+		void setTexCoord(const float x, const float y)
 		{
 			texCoord[0] = x;
 			texCoord[1] = y;
@@ -94,7 +94,7 @@ namespace DDD
 			texCoord[0] = tex.x;
 			texCoord[1] = tex.y;
 		}
-		void setNormal(const float& x, const float& y, const float& z)
+		void setNormal(const float x, const float y, const float z)
 		{
 			normals[0] = x;
 			normals[1] = y;

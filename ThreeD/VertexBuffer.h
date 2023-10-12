@@ -157,7 +157,15 @@ namespace DDD
                 GLCall(glDeleteBuffers(1, &ID));
             }
         }
-
+        void operator= (const CustomVertexBuffer3D& vbo)
+        {
+            vertices.resize(vbo.vertices.size());
+            for (int i = 0; i < vbo.vertices.size(); i++)
+                vertices[i] = vbo.vertices[i];
+            vertexCount = vbo.vertexCount;
+            vertexSize = vbo.vertexSize;
+            layoutFlags = vbo.layoutFlags;
+        }
         virtual const void* getFirstVertex() const
         {
             return &vertices[0];
@@ -191,7 +199,7 @@ namespace DDD
         {
             return getVertexSize() / sizeof(float);
         }
-        void setVertex(unsigned int index, const Vertex3D v)
+        void setVertex(unsigned int index, const Vertex3D& v)
         {
             index *= getComponentsSize();
             unsigned char offset = 0;

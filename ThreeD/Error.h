@@ -6,7 +6,7 @@
 #define ASSERT(x) x;
 #else
 #define ASSERT(x) x;
-#define ASSERT(x) if (!(x)) __debugbreak();
+//#define ASSERT(x) if (!(x)) __debugbreak();
 #endif
 
 #ifndef NDEBUG

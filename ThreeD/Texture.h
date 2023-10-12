@@ -122,7 +122,7 @@ namespace DDD
 			GLCall(glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &this->borderColor.r));
 #endif
 		}
-		bool loadFromImage(sf::Image& image, Type type = Type::TextureRGBA)
+		bool loadFromImage(const sf::Image& image, Type type = Type::TextureRGBA)
 		{
 			this->type = type;
 			if (ID)

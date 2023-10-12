@@ -63,7 +63,7 @@ namespace DDD
     public:
         ~Shader3D()
         {
-            glDeleteProgram(shaderProgram);
+            GLCall(glDeleteProgram(shaderProgram));
         }
 		bool loadFromFile(const std::string& shaderPath, Type type)
 		{
@@ -96,9 +96,37 @@ namespace DDD
             unsigned int s = CompileShader(type, tmp);
             GLCall(glAttachShader(program, s));
             GLCall(glLinkProgram(program));
+
+            int result;
+            GLCall(glGetProgramiv(program, GL_LINK_STATUS, &result));
+		    if (result == GL_FALSE)
+		    {
+                int length;
+                GLCall(glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length));
+			    char* message = (char*)alloca(length * sizeof(char));
+                GLCall(glGetProgramInfoLog(program, length, &length, message));
+                sf::err() << "Failed to link " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
+                sf::err() << message << std::endl;
+		    }
+
             GLCall(glValidateProgram(program));
+
+            int validateResult;
+            GLCall(glGetProgramiv(program, GL_VALIDATE_STATUS, &validateResult));
+            if (validateResult == GL_FALSE)
+            {
+                int length;
+                GLCall(glGetProgramiv(program, GL_INFO_LOG_LENGTH, &length));
+                char* message = (char*)alloca(length * sizeof(char));
+                GLCall(glGetProgramInfoLog(program, length, &length, message));
+                sf::err() << "Failed to validate " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
+                sf::err() << message << std::endl;
+            }
+
             GLCall(glDeleteShader(s));
             shaderProgram = program;
+
+
 		}
         static void Bind(const Shader3D* shader)
         {
