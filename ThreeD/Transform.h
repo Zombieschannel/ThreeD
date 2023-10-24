@@ -64,31 +64,31 @@ namespace DDD
                     matrix[0][3], matrix[1][3],matrix[2][3],matrix[3][3]
             );
         }
-        static Transform3D Perspective(float fov, float aspect, float near, float far)
+        static Transform3D Perspective(float fov, float aspect, float m_near, float m_far)
         {
             float tanHalfFovy = tan((fov * 0.0174533) / 2);
             float a = 1 / (aspect * tanHalfFovy);
             float b = 1 / tanHalfFovy;
-            float c = -(far + near) / (far - near);
-            float d = -(2 * far * near) / (far - near);
+            float c = -(m_far + m_near) / (m_far - m_near);
+            float d = -(2 * m_far * m_near) / (m_far - m_near);
 
             return Transform3D(a, 0, 0, 0,
                                0, b, 0, 0,
                                0, 0, c, d,
                                0, 0, -1, 0);
         }
-        static Transform3D Ortho(float left, float right, float top, float bottom, float near, float far)
+        static Transform3D Ortho(float left, float right, float top, float bottom, float m_near, float m_far)
         {
             float tx = (right + left) / (right - left);
             float ty = (top + bottom) / (top - bottom);
-            float tz = (far + near) / (far - near);
+            float tz = (m_far + m_near) / (m_far - m_near);
             tx = -tx;
             ty = -ty;
             tz = -tz;
 
             float a = 2 / (right - left);
             float b = 2 / (top - bottom);
-            float c = -2 / (far - near);
+            float c = -2 / (m_far - m_near);
 
             return Transform3D(a, 0, 0, tx,
                                0, b, 0, ty,
