@@ -53,7 +53,7 @@ namespace DDD
         const Shader3D* shader;
         const Material3D* material;
 	};
-    const RenderStates3D RenderStates3D::Default(BlendMode3D(
+    inline const RenderStates3D RenderStates3D::Default(BlendMode3D(
         BlendMode3D::SrcAlpha, BlendMode3D::OneMinusSrcAlpha, BlendMode3D::Add,
         BlendMode3D::One, BlendMode3D::OneMinusSrcAlpha, BlendMode3D::Add));
 }

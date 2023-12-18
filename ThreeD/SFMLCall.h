@@ -3,7 +3,7 @@
 #include "Error.h"
 #define SFMLCall(x) resetGLstates();\
 x
-void resetGLstates()
+static void resetGLstates()
 {
 #ifndef GLES20
 	GLCall(glBindVertexArray(0));

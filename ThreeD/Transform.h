@@ -216,22 +216,22 @@ namespace DDD
         float matrix[4][4];
     };
     static const Transform3D Identity;
-    Transform3D operator *(const Transform3D& left, const Transform3D& right)
+    static Transform3D operator *(const Transform3D& left, const Transform3D& right)
     {
         return Transform3D(left).combine(right);
     }
 
-    Transform3D& operator *=(Transform3D& left, const Transform3D& right)
+    static Transform3D& operator *=(Transform3D& left, const Transform3D& right)
     {
         return left.combine(right);
     }
 
-    sf::Vector3f operator *(const Transform3D& left, const sf::Vector3f& right)
+    static sf::Vector3f operator *(const Transform3D& left, const sf::Vector3f& right)
     {
         return left.transformPoint(right);
     }
 
-    bool operator ==(const Transform3D& left, const Transform3D& right)
+    static bool operator ==(const Transform3D& left, const Transform3D& right)
     {
         const float* a = left.getMatrix();
         const float* b = right.getMatrix();
@@ -242,7 +242,7 @@ namespace DDD
                 (a[12] == b[12]) && (a[13] == b[13]) && (a[14] == b[14]) && (a[15] == b[15]));
     }
 
-    bool operator !=(const Transform3D& left, const Transform3D& right)
+    static bool operator !=(const Transform3D& left, const Transform3D& right)
     {
         return !(left == right);
     }

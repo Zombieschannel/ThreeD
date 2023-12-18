@@ -69,7 +69,7 @@ namespace DDD
         Factor alphaDstFactor;
         Equation alphaEquation;
     };
-    bool operator ==(const BlendMode3D& left, const BlendMode3D& right)
+    static bool operator ==(const BlendMode3D& left, const BlendMode3D& right)
     {
         return (left.colorSrcFactor == right.colorSrcFactor) &&
             (left.colorDstFactor == right.colorDstFactor) &&
@@ -78,19 +78,19 @@ namespace DDD
             (left.alphaDstFactor == right.alphaDstFactor) &&
             (left.alphaEquation == right.alphaEquation);
     }
-    bool operator !=(const BlendMode3D& left, const BlendMode3D& right)
+    static bool operator !=(const BlendMode3D& left, const BlendMode3D& right)
     {
         return !(left == right);
     }
-    const BlendMode3D BlendAlpha(BlendMode3D::SrcAlpha, BlendMode3D::OneMinusSrcAlpha, BlendMode3D::Add,
+    static const BlendMode3D BlendAlpha(BlendMode3D::SrcAlpha, BlendMode3D::OneMinusSrcAlpha, BlendMode3D::Add,
         BlendMode3D::One, BlendMode3D::OneMinusSrcAlpha, BlendMode3D::Add);
-    const BlendMode3D BlendAdd(BlendMode3D::SrcAlpha, BlendMode3D::One, BlendMode3D::Add,
+    static const BlendMode3D BlendAdd(BlendMode3D::SrcAlpha, BlendMode3D::One, BlendMode3D::Add,
         BlendMode3D::One, BlendMode3D::One, BlendMode3D::Add);
-    const BlendMode3D BlendMultiply(BlendMode3D::DstColor, BlendMode3D::Zero, BlendMode3D::Add);
+    static const BlendMode3D BlendMultiply(BlendMode3D::DstColor, BlendMode3D::Zero, BlendMode3D::Add);
 #if not defined(GLES20)
-    const BlendMode3D BlendMin(BlendMode3D::One, BlendMode3D::One, BlendMode3D::Min);
-    const BlendMode3D BlendMax(BlendMode3D::One, BlendMode3D::One, BlendMode3D::Max);
+    static const BlendMode3D BlendMin(BlendMode3D::One, BlendMode3D::One, BlendMode3D::Min);
+    static const BlendMode3D BlendMax(BlendMode3D::One, BlendMode3D::One, BlendMode3D::Max);
 #endif
-    const BlendMode3D BlendNone(BlendMode3D::One, BlendMode3D::Zero, BlendMode3D::Add);
+    static const BlendMode3D BlendNone(BlendMode3D::One, BlendMode3D::Zero, BlendMode3D::Add);
 
 } 
