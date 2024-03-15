@@ -17,12 +17,16 @@ namespace DDD
         {
             Vertex = GL_VERTEX_SHADER,
             Fragment = GL_FRAGMENT_SHADER,
-#if defined(GLES31) || defined(GLES32) || not defined(__ANDROID__)
+#ifdef GL_COMPUTE_SHADER
             Compute = GL_COMPUTE_SHADER,
 #endif
-#if not defined (__ANDROID__)
+#ifdef GL_GEOMETRY_SHADER
             Geometry = GL_GEOMETRY_SHADER,
+#endif
+#ifdef GL_TESS_CONTROL_SHADER
             TessControl = GL_TESS_CONTROL_SHADER,
+#endif
+#ifdef GL_TESS_EVALUATION_SHADER
             TessEvaluation = GL_TESS_EVALUATION_SHADER
 #endif
         };

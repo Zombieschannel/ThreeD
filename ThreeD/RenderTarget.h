@@ -84,13 +84,55 @@ namespace DDD
             if (states.shader && states.texture)
                 states.shader->setUniform("u_textures[0]", *states.texture);
 
-            if (&vao->getIndexBuffer() != nullptr)
+            if (vao->getIndexBuffer() != nullptr)
             {
-                GLCall(glDrawElements(type, vao->getIndexBuffer().getIndexCount(), GL_UNSIGNED_INT, nullptr));
+                GLCall(glDrawElements(type, vao->getIndexBuffer()->getIndexCount(), GL_UNSIGNED_INT, nullptr));
             }
             else
             {
-                GLCall(glDrawArrays(type, 0, vao->getVertexBuffer().getVertexCount()));
+                GLCall(glDrawArrays(type, 0, vao->getVertexBuffer()->getVertexCount()));
+            }
+
+        }
+        void draw3D(const VertexArray3D* vao, unsigned int first, unsigned int count,
+            PrimitiveType3D type = PrimitiveType3D::Points, const RenderStates3D& states = RenderStates3D::Default)
+        {
+            if (!vao)
+                return;
+            GLCall(glBlendFunc(states.blendMode.colorSrcFactor, states.blendMode.colorDstFactor));
+            GLCall(glBlendEquation(states.blendMode.colorEquation));
+
+            VertexArray3D::Bind(*vao);
+            if (states.shader)
+                Shader3D::Bind(states.shader);
+            if (states.shader)
+            {
+                states.shader->setUniform("u_model", states.transform);
+                states.shader->setUniform("u_view", getView3D().getTransform());
+                states.shader->setUniform("u_proj", getProjection3D().getTransform());
+            }
+            if (states.shader && states.material)
+            {
+                states.shader->setUniform("m_ambient", states.material->getAmbient());
+                states.shader->setUniform("m_diffuse", states.material->getDiffuse());
+                states.shader->setUniform("m_specular", states.material->getSpecular());
+                states.shader->setUniform("m_emission", states.material->getEmission());
+                states.shader->setUniform("m_highlights", states.material->getHighlights());
+            }
+            if (states.texture)
+                Texture3D::Bind(states.texture);
+            else
+                Texture3D::Bind(nullptr);
+            if (states.shader && states.texture)
+                states.shader->setUniform("u_textures[0]", *states.texture);
+
+            if (vao->getIndexBuffer() != nullptr)
+            {
+                GLCall(glDrawElements(type, count, GL_UNSIGNED_INT, nullptr));
+            }
+            else
+            {
+                GLCall(glDrawArrays(type, first, count));
             }
 
         }

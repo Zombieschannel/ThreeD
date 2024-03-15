@@ -44,13 +44,13 @@ namespace DDD
 			GLCall(glDeleteVertexArrays(1, &ID));
 #endif
 		}
-		VBO& getVertexBuffer() const
+		VBO* getVertexBuffer() const
 		{
-			return *vertexBuffer;
+			return vertexBuffer;
 		}
-		IndexBuffer3D& getIndexBuffer() const
+		IndexBuffer3D* getIndexBuffer() const
 		{
-			return *indexBuffer;
+			return indexBuffer;
 		}
 		void setBuffers(VBO& vB, IndexBuffer3D& iB)
 		{

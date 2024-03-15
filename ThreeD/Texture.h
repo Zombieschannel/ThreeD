@@ -69,7 +69,7 @@ namespace DDD
 				GLCall(glDeleteTextures(1, &ID));
 			}
 		}
-		const unsigned int& getHandle() const
+		unsigned int& getHandle()
 		{
 			return ID;
 		}

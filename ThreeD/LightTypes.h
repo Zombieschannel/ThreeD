@@ -212,8 +212,8 @@ namespace DDD
 			shader->setUniform("spotLights[" + std::to_string(index) + "].col", lightColor);
 			shader->setUniform("spotLights[" + std::to_string(index) + "].quadratic", quadratic);
 			shader->setUniform("spotLights[" + std::to_string(index) + "].linear", linear);
-			shader->setUniform("spotLights[" + std::to_string(index) + "].outer", cos(outerCone * 0.0174533f));
-			shader->setUniform("spotLights[" + std::to_string(index) + "].inner", cos(innerCone * 0.0174533f));
+			shader->setUniform("spotLights[" + std::to_string(index) + "].outer", std::cos(outerCone * 0.0174533f));
+			shader->setUniform("spotLights[" + std::to_string(index) + "].inner", std::cos(innerCone * 0.0174533f));
 		}
 	};
 }
