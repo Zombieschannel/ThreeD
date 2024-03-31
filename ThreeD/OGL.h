@@ -1,8 +1,6 @@
 #pragma once
 #ifdef __ANDROID__
 
-#define GLES31
-
 #ifdef GLES20
 #include <GLES2/gl2.h>
 #endif
@@ -21,7 +19,6 @@
 
 #else
 
-//#include <GL/glew.h>
 #include <glad/glad.h>
 
 #endif
