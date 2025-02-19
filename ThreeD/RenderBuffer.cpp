@@ -4,22 +4,25 @@
 namespace DDD
 {
     RenderBuffer3D::RenderBuffer3D()
-        : ID(0U)
     {
-
+        GLCall(glGenRenderbuffers(1, &ID));
     }
     RenderBuffer3D::~RenderBuffer3D()
     {
         GLCall(glDeleteRenderbuffers(1, &ID));
     }
+    std::uint32_t RenderBuffer3D::getHandle() const
+    {
+        return ID;
+    }
     void RenderBuffer3D::create(const sf::Vector2u size, const std::uint32_t internalFormat)
     {
-        if (ID)
-        {
-            GLCall(glDeleteRenderbuffers(1, &ID));
-        }
-        GLCall(glGenRenderbuffers(1, &ID));
         GLCall(glBindRenderbuffer(GL_RENDERBUFFER, ID));
         GLCall(glRenderbufferStorage(GL_RENDERBUFFER, internalFormat, size.x, size.y));
+        this->size = size;
+    }
+    const sf::Vector2u RenderBuffer3D::getSize() const
+    {
+        return size;
     }
 }

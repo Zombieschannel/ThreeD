@@ -70,7 +70,7 @@ namespace DDD
     {
         return drawType;
     }
-    void IndexBuffer3D::Update()
+    void IndexBuffer3D::Update() const
     {
         GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID));
         GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(std::uint16_t), indices.data(), static_cast<std::uint32_t>(drawType)));

@@ -25,17 +25,6 @@ namespace DDD
     bool RenderWindow3D::setActive(bool active)
     {
         bool result = sf::Window::setActive(active);
-
-        if (result)
-            sf::RenderTarget::setActive(active);
         return result;
-    }
-    void RenderWindow3D::onCreate()
-    {
-        sf::RenderTarget::initialize();
-    }
-    void RenderWindow3D::onResize()
-    {
-        setView(getView());
     }
 }

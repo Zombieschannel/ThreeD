@@ -23,13 +23,13 @@ namespace DDD
     Vertex3D::~Vertex3D()
     {
     }
-    std::uint8_t Vertex3D::componentSize(const std::uint8_t component)
+    std::uint8_t Vertex3D::componentCount(const std::uint8_t component)
     {
         switch (component)
         {
-        case 0: return sizeof(sf::Vector3f);
-        case 1: return sizeof(ColorF);
-        case 2: return sizeof(sf::Vector2f);
+        case 0: return 3;
+        case 1: return 4;
+        case 2: return 2;
         default: return 0;
         }
     }

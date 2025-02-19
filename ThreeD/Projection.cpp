@@ -7,9 +7,14 @@ namespace DDD
         transform = Transform3D::Perspective(FOV, ratio, _near, _far);
     }
     Projection3D::Projection3D()
-    : _near(0.1f), _far(1000.f)
+        : _near(0.1f), _far(1000.f)
     {
         
+    }
+    Projection3D::Projection3D(const sf::IntRect& viewPort)
+    : _near(0.1f), _far(1000.f)
+    {
+        setViewport(viewPort);
     }
     Projection3D::Projection3D(float FOV, float ratio, float _near, float _far)
     {
@@ -19,13 +24,14 @@ namespace DDD
         this->FOV = FOV;
         setup();
     }
-    Projection3D::Projection3D(const Transform3D& t)
-    : _near(0.1f), _far(1000.f)
+    Projection3D::Projection3D(const Transform3D& transform)
+        : _near(0.1f), _far(1000.f)
     {
-        transform = t;
+        this->transform = transform;
     }
-    void Projection3D::create(float FOV, float ratio, float _near, float _far)
+    void Projection3D::create(const sf::IntRect& viewPort, float FOV, float ratio, float _near, float _far)
     {
+        this->viewPort = viewPort;
         this->ratio = ratio;
         this->_near = _near;
         this->_far = _far;
@@ -52,6 +58,14 @@ namespace DDD
         this->ratio = ratio;
         setup();
     }
+    void Projection3D::setViewport(const sf::IntRect& rect)
+    {
+        viewPort = rect;
+    }
+    void Projection3D::setTransform(const Transform3D& transform)
+    {
+        this->transform = transform;
+    }
     const float Projection3D::getFov() const
     {
         return FOV;
@@ -67,5 +81,9 @@ namespace DDD
     const float Projection3D::getFar() const
     {
         return _far;
+    }
+    const sf::IntRect& Projection3D::getViewport() const
+    {
+        return viewPort;
     }
 }

@@ -25,7 +25,6 @@ namespace DDD
 		};
 	private:
 		std::uint32_t ID;
-		std::uint32_t slot;
 		mutable bool flipped;
 		Type type = TextureRGBA;
 		bool smooth;
@@ -38,7 +37,6 @@ namespace DDD
 		~Texture3D();
 		
 		std::uint32_t getHandle() const;
-		const std::uint32_t getSlot() const;
 		const sf::Vector2u getSize() const;
 		const bool isSmooth() const;
 		const bool isRepeated() const;
@@ -50,10 +48,10 @@ namespace DDD
 		void generateMipMap();
 		void update(const sf::Window& window, const sf::Vector2u offset = sf::Vector2u());
 		
-		void setSlot(std::uint32_t slot);
 		void setSize(const sf::Vector2u size);
 		void setSmooth(bool smooth);
 		void setRepeated(bool repeated);
 	};
+	void TextureSlot(const std::uint8_t slot);
 	void BindTexture(const Texture3D* texture);
 }

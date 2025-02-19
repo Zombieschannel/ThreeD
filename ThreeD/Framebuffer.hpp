@@ -1,4 +1,5 @@
 #pragma once
+#include <SFML/System/Vector2.hpp>
 #include <cstdint>
 #include "Error.hpp"
 #include "Texture.hpp"
@@ -22,12 +23,16 @@ namespace DDD
 			DepthStencil = GL_DEPTH_STENCIL_ATTACHMENT,
 		};
 	private:
-		std::uint32_t ID = 0U;
+		std::uint32_t ID;
+		sf::Vector2u size;
 	public:
+		FrameBuffer3D();
 		~FrameBuffer3D();
-		void create();
+
+		std::uint32_t getHandle() const;
 		void attachTexture(const Texture3D& texture, Type type);
 		void attachRenderBuffer(const RenderBuffer3D& renderbuffer, Type type);
-		static void Bind(const FrameBuffer3D* framebuffer);
+		virtual sf::Vector2u getSize() const;
 	};
+	void BindFrameBuffer(const FrameBuffer3D* framebuffer);
 }

@@ -10,22 +10,14 @@ namespace DDD
         transform.translate(-position);
     }
     View3D::View3D()
-        : position(sf::Vector3f(0, 0, 0)), rotation(sf::Vector3f(0, 0, 0))
+        : position(sf::Vector3f(0, 0, 0)), rotation(sf::Vector3f(0, 0, 0)), origin(sf::Vector3f(0, 0, 0))
     {
     }
-    View3D::View3D(const sf::IntRect &viewPort)
-        : position(sf::Vector3f(0, 0, 0)), rotation(sf::Vector3f(0, 0, 0))
-    {
-        
-        setViewPort(viewPort);
-        setup();
-    }
-    void View3D::create(const sf::IntRect &viewPort, const sf::Vector3f position, const sf::Vector3f rotation, const sf::Vector3f origin)
+    void View3D::create(const sf::Vector3f position, const sf::Vector3f rotation, const sf::Vector3f origin)
     {
         this->position = position;
         this->rotation = rotation;
         this->origin = origin;
-        setViewPort(viewPort);
         setup();
     }
     void View3D::setPosition(const sf::Vector3f position)
@@ -53,11 +45,6 @@ namespace DDD
         this->rotation += rotation;
         setup();
     }
-    void View3D::setViewPort(const sf::IntRect &rect)
-    {
-        viewPort = rect;
-        GLCall(glViewport(rect.left, rect.top, rect.width, rect.height));
-    }
     sf::Vector3f View3D::getPosition() const
     {
         return position;
@@ -70,13 +57,9 @@ namespace DDD
     {
         return origin;
     }
-    const Transform3D &View3D::getTransform() const
+    const Transform3D& View3D::getTransform() const
     {
         return transform;
-    }
-    const sf::IntRect &View3D::getViewPort() const
-    {
-        return viewPort;
     }
     void View3D::NormalizeRotation()
     {

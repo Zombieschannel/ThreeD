@@ -1,9 +1,8 @@
 #include "VertexBuffer.hpp"
-#include "VertexComponent.hpp"
 
 namespace
 {
-    std::uint32_t drawTypeToGLtype(DDD::DrawType type)
+    std::uint32_t typeToGLtype(DDD::DrawType type)
     {
         switch (type)
         {
@@ -13,9 +12,10 @@ namespace
             return GL_DYNAMIC_DRAW;
         case DDD::DrawType::Stream:
             return GL_STREAM_DRAW;
+        default:
+            break;
         }
-        return GL_STATIC_DRAW;
-    }
+    }   
 }
 
 namespace DDD
@@ -56,11 +56,6 @@ namespace DDD
     {
         return sizeof(T);
     }
-    template<typename T>
-    const std::vector<std::uint8_t>& VertexBuffer3D<T>::getAttribLocation() const
-    {
-        return attribLocation;
-    }
     template <typename T>
     T& VertexBuffer3D<T>::operator[](std::uint32_t index)
     {
@@ -97,15 +92,21 @@ namespace DDD
         return drawType;
     }
     template <typename T>
-    void VertexBuffer3D<T>::setAttribLocation(const std::vector<std::uint8_t>& attribLocation)
+    void VertexBuffer3D<T>::setLayout(const std::vector<std::uint32_t>& attribLocation) const
     {
-        this->attribLocation = attribLocation;
+        std::uint32_t offset = 0;
+        for (std::uint32_t i = 0; T::componentSize(i) > 0 && i < attribLocation.size(); i++)
+        {
+            GLCall(glEnableVertexAttribArray(attribLocation[i]));
+			GLCall(glVertexAttribPointer(attribLocation[i], T::componentSize(i), static_cast<std::uint32_t>(T::componentType(i)), GL_FALSE, getVertexSize(), reinterpret_cast<const void*>(offset)));
+            offset += T::componentSize(i);
+        }
     }
     template <typename T>
-    void VertexBuffer3D<T>::Update() const
+    void VertexBuffer3D<T>::Update()
     {
         GLCall(glBindBuffer(GL_ARRAY_BUFFER, ID));
-        GLCall(glBufferData(GL_ARRAY_BUFFER, getVertexCount() * getVertexSize(), getFirstVertex(), drawTypeToGLtype(drawType)));
+        GLCall(glBufferData(GL_ARRAY_BUFFER, getVertexCount() * getVertexSize(), getFirstVertex(), typeToGLtype(drawType)));
     }
     template <typename T>
     void BindVertexBuffer(const VertexBuffer3D<T>* buffer)

@@ -28,7 +28,7 @@ namespace DDD
         void resize(std::uint32_t indexCount);
         void append(std::uint16_t index);
         void setDrawType(DrawType type);
-        void Update();
+        void Update() const;
 	};
-    static void BindIndexBuffer(const IndexBuffer3D* buffer);
+    void BindIndexBuffer(const IndexBuffer3D* buffer);
 }

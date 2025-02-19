@@ -19,7 +19,7 @@ namespace DDD
 		Vertex3D(const sf::Vector3f pos, const ColorF col, const sf::Vector2f tex);
 		~Vertex3D();
 
-		static std::uint8_t componentSize(const std::uint8_t component);
+		static std::uint8_t componentCount(const std::uint8_t component);
 		static Component componentType(const std::uint8_t component);
 	};
 }

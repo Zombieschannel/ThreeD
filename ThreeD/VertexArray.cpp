@@ -54,14 +54,21 @@ namespace DDD
 	}
 
     template <typename T>
-    void VertexArray3D<T>::UpdateVertexBuffer() const
+    void VertexArray3D<T>::setLayout(const std::vector<std::uint32_t>& attribLocation)
+    {
+		if (vertexBuffer)
+			vertexBuffer->setLayout(attribLocation);
+    }
+
+    template <typename T>
+    void VertexArray3D<T>::UpdateVertexBuffer()
     {
 		if (vertexBuffer)
 			vertexBuffer->Update();
     }
 
     template <typename T>
-    void VertexArray3D<T>::UpdateIndexBuffer() const
+    void VertexArray3D<T>::UpdateIndexBuffer()
     {
 		if (indexBuffer)
 			indexBuffer->Update();
@@ -73,12 +80,12 @@ namespace DDD
 		if (vao)
 		{
 #ifndef GLES20
-			GLCall(glBindVertexArray(vao->getHandle()));
+			GLCall(glBindVertexArray(vao->ID));
 #else
-			if (vao->getVertexBuffer())
-				BindVertexBuffer(vao->getVertexBuffer());
-			if (vao->getIndexBuffer())
-				BindIndexBuffer(*vao->getIndexBuffer());
+			if (vao->vertexBuffer)
+				BindVertexBuffer(vao->vertexBuffer);
+			if (vao->indexBuffer)
+				BindIndexBuffer(*vao->indexBuffer);
 #endif
 		}
 		else

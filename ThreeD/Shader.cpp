@@ -53,24 +53,24 @@ namespace DDD
 
         GLCall(std::uint32_t shader = glCreateShader(type));
 
-        const char* data = tmp.data();
-        GLCall(glShaderSource(ID, 1, &data, nullptr));
-        GLCall(glCompileShader(ID));
+        const char* data = &tmp[0];
+        GLCall(glShaderSource(shader, 1, &data, nullptr));
+        GLCall(glCompileShader(shader));
 
         std::int32_t result = 0;
-        GLCall(glGetShaderiv(ID, GL_COMPILE_STATUS, &result));
+        GLCall(glGetShaderiv(shader, GL_COMPILE_STATUS, &result));
         if (result == GL_FALSE)
         {
             std::int32_t length;
-            GLCall(glGetShaderiv(ID, GL_INFO_LOG_LENGTH, &length));
+            GLCall(glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &length));
 
             std::string message;
             message.resize(length);
 
-            GLCall(glGetShaderInfoLog(ID, length, &length, &message[0]));
+            GLCall(glGetShaderInfoLog(shader, length, &length, &message[0]));
             sf::err() << "Failed to compile shader!" << std::endl;
             sf::err() << message << std::endl;
-            GLCall(glDeleteShader(ID));
+            GLCall(glDeleteShader(shader));
             return;
         }
 
@@ -123,10 +123,6 @@ namespace DDD
             samplers[i] = i;
         GLCall(glUniform1iv(loc, count, samplers));
         delete[] samplers;
-    }
-    void Shader3D::setUniform(const std::string& name, const Texture3D& v) const
-    {
-        GLCall(glUniform1i(GetUniformLocation(name), v.getSlot()));
     }
     void Shader3D::setUniform(const std::string& name, const Transform3D& v) const
     {

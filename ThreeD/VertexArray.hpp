@@ -19,10 +19,10 @@ namespace DDD
 		std::uint32_t getHandle() const;
 		const VertexBuffer3D<T>* getVertexBuffer() const;
 		const IndexBuffer3D* getIndexBuffer() const;
+
 		void setBuffers(const VertexBuffer3D<T>* vertexBuffer, const IndexBuffer3D* indexBuffer);
-		void setLayout(const std::vector<std::uint32_t>& attribLocation);
-		void UpdateVertexBuffer();
-		void UpdateIndexBuffer();
+		void UpdateVertexBuffer() const;
+		void UpdateIndexBuffer() const;
 	};
 	template <typename T>
     void BindVertexArray(const VertexArray3D<T>* vao);

@@ -24,12 +24,12 @@ namespace
 namespace DDD
 {
     Texture3D::Texture3D()
-        : ID(0U), slot(0U), flipped(false), type(TextureRGBA), smooth(false), hasMipmap(false), repeated(false), size(0, 0)
+        : ID(0U), flipped(false), type(TextureRGBA), smooth(false), hasMipmap(false), repeated(false), size(0, 0)
     {
 
     }
     Texture3D::Texture3D(std::uint32_t ID, std::uint32_t slot, Type type)
-        : ID(ID), slot(slot), flipped(false), type(type), smooth(false), hasMipmap(false), repeated(false), size(0, 0)
+        : ID(ID), flipped(false), type(type), smooth(false), hasMipmap(false), repeated(false), size(0, 0)
     {
 
     }
@@ -58,7 +58,6 @@ namespace DDD
         }
         this->size = size;
         GLCall(glGenTextures(1, &ID));
-        GLCall(glActiveTexture(GL_TEXTURE0 + slot));
         GLCall(glBindTexture(GL_TEXTURE_2D, ID));
         GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST));
         GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR : GL_NEAREST));
@@ -85,7 +84,6 @@ namespace DDD
             GLCall(glDeleteTextures(1, &ID));
         }
         GLCall(glGenTextures(1, &ID));
-        GLCall(glActiveTexture(GL_TEXTURE0 + slot));
         GLCall(glBindTexture(GL_TEXTURE_2D, ID));
         GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, smooth ? GL_LINEAR : GL_NEAREST));
         GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR : GL_NEAREST));
@@ -123,7 +121,6 @@ namespace DDD
         if (!ID)
             return;
         this->smooth = smooth;
-        GLCall(glActiveTexture(GL_TEXTURE0 + slot));
         GLCall(glBindTexture(GL_TEXTURE_2D, ID));
         GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, smooth ? GL_LINEAR : GL_NEAREST));
         if (hasMipmap)
@@ -140,7 +137,6 @@ namespace DDD
     {
         if (!ID)
             return;
-        GLCall(glActiveTexture(GL_TEXTURE0 + slot));
         GLCall(glBindTexture(GL_TEXTURE_2D, ID));
         GLCall(glCopyTexSubImage2D(GL_TEXTURE_2D, 0, offset.x, offset.y, 0, 0, window.getSize().x, window.getSize().y));
         GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
@@ -164,7 +160,6 @@ namespace DDD
         //fix for gles
 
 #else
-        GLCall(glActiveTexture(GL_TEXTURE0 + slot));
         GLCall(glBindTexture(GL_TEXTURE_2D, ID));
         GLCall(glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels));
 #endif
@@ -180,7 +175,6 @@ namespace DDD
         if (!ID)
             return;
         this->repeated = repeated;
-        GLCall(glActiveTexture(GL_TEXTURE0 + slot));
         GLCall(glBindTexture(GL_TEXTURE_2D, ID));
         GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, repeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
         GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, repeated ? GL_REPEAT : GL_CLAMP_TO_EDGE));
@@ -197,24 +191,18 @@ namespace DDD
     {
         this->size = size;
     }
-    void Texture3D::setSlot(std::uint32_t slot)
+    void TextureSlot(const std::uint8_t slot)
     {
-        this->slot = slot;
-    }
-    const std::uint32_t Texture3D::getSlot() const
-    {
-        return slot;
+        GLCall(glActiveTexture(GL_TEXTURE0 + slot));
     }
     void BindTexture(const Texture3D *texture)
 	{
 		if (texture)
 		{
-			GLCall(glActiveTexture(GL_TEXTURE0 + texture->getSlot()));
 			GLCall(glBindTexture(GL_TEXTURE_2D, texture->getHandle()));
 		}
 		else
 		{
-			GLCall(glActiveTexture(GL_TEXTURE0));
 			GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 		}
 	}

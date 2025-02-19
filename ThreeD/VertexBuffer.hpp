@@ -14,6 +14,7 @@ namespace DDD
         std::vector<T> vertices;
         DrawType drawType = DrawType::Dynamic;
         std::uint32_t ID;
+        std::vector<std::uint8_t> attribLocation;
     public:
         VertexBuffer3D();
         VertexBuffer3D(sf::PrimitiveType type, std::uint32_t vertexCount = 0);
@@ -23,6 +24,8 @@ namespace DDD
         const void* getFirstVertex() const;
         std::uint32_t getVertexCount() const;
         std::uint32_t getVertexSize() const;
+        const std::vector<std::uint8_t>& getAttribLocation() const;
+
         T& operator[] (std::uint32_t index);
         void clear();
         void resize(const std::uint32_t vertexCount);
@@ -30,8 +33,8 @@ namespace DDD
         void setDrawType(DrawType type);
         const T& at(std::uint32_t index) const;
         const DrawType getDrawType() const;
-        void setLayout(const std::vector<std::uint32_t>& attribLocation) const;
-        void Update();
+        void setAttribLocation(const std::vector<std::uint8_t>& attribLocation);
+        void Update() const;
     };
     template <typename T>
     void BindVertexBuffer(const VertexBuffer3D<T>* buffer);
