@@ -1,4 +1,5 @@
 #include "RenderTarget.hpp"
+#include "Shader.hpp"
 
 namespace DDD
 {

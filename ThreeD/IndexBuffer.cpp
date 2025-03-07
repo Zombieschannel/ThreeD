@@ -1,24 +1,6 @@
 #include "IndexBuffer.hpp"
 #include "Error.hpp"
 
-namespace
-{
-    std::uint32_t typeToGLtype(DDD::DrawType type)
-    {
-        switch (type)
-        {
-        case DDD::DrawType::Static:
-            return GL_STATIC_DRAW;
-        case DDD::DrawType::Dynamic:
-            return GL_DYNAMIC_DRAW;
-        case DDD::DrawType::Stream:
-            return GL_STREAM_DRAW;
-        default:
-            break;
-        }
-    }   
-}
-
 namespace DDD
 {
     IndexBuffer3D::IndexBuffer3D()
