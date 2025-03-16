@@ -41,15 +41,14 @@ namespace DDD
     }
     void Shader3D::loadFromMemory(const std::string& memory, Type type)
     {
-        sf::MemoryInputStream stream;
-        stream.open(memory.c_str(), memory.size());
+        sf::MemoryInputStream stream(memory.c_str(), memory.size());
         loadFromStream(stream, type);
     }
     void Shader3D::loadFromStream(sf::InputStream& stream, Type type)
     {
         std::string tmp;
-        tmp.resize(stream.getSize());
-        stream.read(&tmp[0], stream.getSize());
+        tmp.resize(*stream.getSize());
+        stream.read(&tmp[0], *stream.getSize());
 
         GLCall(std::uint32_t shader = glCreateShader(type));
 

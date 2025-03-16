@@ -155,7 +155,7 @@ namespace DDD
         if (!ID)
             return;
 
-        sf::Uint8* pixels = new sf::Uint8[getSize().x * getSize().y * typeToGLsize(type)];
+        std::uint8_t* pixels = new std::uint8_t[getSize().x * getSize().y * typeToGLsize(type)];
 #ifdef SFML_OPENGL_ES
         //fix for gles
 
@@ -164,7 +164,7 @@ namespace DDD
         GLCall(glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels));
 #endif
 
-        img.create(getSize().x, getSize().y, pixels);
+        img.resize(getSize(), pixels);
         if (flipped)
             img.flipVertically();
 

@@ -51,7 +51,7 @@ namespace DDD
     {
         if (initialized)
             return;
-        proj.setViewport(sf::IntRect(0, 0, getSize().x, getSize().y));
+        proj.setViewport(sf::IntRect({ 0, 0 }, static_cast<sf::Vector2i>(getSize())));
         proj.setTransform(Transform3D::Ortho(0, getSize().x, 0, getSize().y, -1, 1));
         initialized = true;
     }
@@ -59,16 +59,16 @@ namespace DDD
     {
         switch (factor)
         {
-            case sf::BlendMode::Zero:             return GL_ZERO;
-            case sf::BlendMode::One:              return GL_ONE;
-            case sf::BlendMode::SrcColor:         return GL_SRC_COLOR;
-            case sf::BlendMode::OneMinusSrcColor: return GL_ONE_MINUS_SRC_COLOR;
-            case sf::BlendMode::DstColor:         return GL_DST_COLOR;
-            case sf::BlendMode::OneMinusDstColor: return GL_ONE_MINUS_DST_COLOR;
-            case sf::BlendMode::SrcAlpha:         return GL_SRC_ALPHA;
-            case sf::BlendMode::OneMinusSrcAlpha: return GL_ONE_MINUS_SRC_ALPHA;
-            case sf::BlendMode::DstAlpha:         return GL_DST_ALPHA;
-            case sf::BlendMode::OneMinusDstAlpha: return GL_ONE_MINUS_DST_ALPHA;
+        case sf::BlendMode::Factor::Zero:             return GL_ZERO;
+        case sf::BlendMode::Factor::One:              return GL_ONE;
+        case sf::BlendMode::Factor::SrcColor:         return GL_SRC_COLOR;
+        case sf::BlendMode::Factor::OneMinusSrcColor: return GL_ONE_MINUS_SRC_COLOR;
+        case sf::BlendMode::Factor::DstColor:         return GL_DST_COLOR;
+        case sf::BlendMode::Factor::OneMinusDstColor: return GL_ONE_MINUS_DST_COLOR;
+        case sf::BlendMode::Factor::SrcAlpha:         return GL_SRC_ALPHA;
+        case sf::BlendMode::Factor::OneMinusSrcAlpha: return GL_ONE_MINUS_SRC_ALPHA;
+        case sf::BlendMode::Factor::DstAlpha:         return GL_DST_ALPHA;
+        case sf::BlendMode::Factor::OneMinusDstAlpha: return GL_ONE_MINUS_DST_ALPHA;
         }
         return GL_ZERO;
     }
@@ -76,11 +76,11 @@ namespace DDD
     {
         switch (equation)
         {
-            case sf::BlendMode::Add:               return GL_FUNC_ADD;
-            case sf::BlendMode::Subtract:          return GL_FUNC_SUBTRACT;
-            case sf::BlendMode::ReverseSubtract:   return GL_FUNC_REVERSE_SUBTRACT;
-            case sf::BlendMode::Min:               return GL_MIN;
-            case sf::BlendMode::Max:               return GL_MAX;
+        case sf::BlendMode::Equation::Add:               return GL_FUNC_ADD;
+        case sf::BlendMode::Equation::Subtract:          return GL_FUNC_SUBTRACT;
+        case sf::BlendMode::Equation::ReverseSubtract:   return GL_FUNC_REVERSE_SUBTRACT;
+        case sf::BlendMode::Equation::Min:               return GL_MIN;
+        case sf::BlendMode::Equation::Max:               return GL_MAX;
         }
         return GL_FUNC_ADD;
     }
@@ -94,7 +94,6 @@ namespace DDD
         case sf::PrimitiveType::Triangles:         return GL_TRIANGLES;
         case sf::PrimitiveType::TriangleStrip:     return GL_TRIANGLE_STRIP;
         case sf::PrimitiveType::TriangleFan:       return GL_TRIANGLE_FAN;
-        case sf::PrimitiveType::Quads:             return GL_QUADS;
         }
         return GL_POINTS;
     }

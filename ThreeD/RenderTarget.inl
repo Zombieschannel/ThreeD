@@ -15,7 +15,7 @@ namespace DDD
     {
         if (!vbo)
             return;
-        GLCall(glViewport(proj.getViewport().left, proj.getViewport().top, proj.getViewport().width, proj.getViewport().height));
+        GLCall(glViewport(proj.getViewport().position.x, proj.getViewport().position.y, proj.getViewport().size.x, proj.getViewport().size.y));
         
         GLCall(glBlendFunc(blendFactorToGLtype(states.blendMode.colorSrcFactor), blendFactorToGLtype(states.blendMode.colorDstFactor)));
         GLCall(glBlendEquation(blendEquationToGLtype(states.blendMode.colorEquation)));

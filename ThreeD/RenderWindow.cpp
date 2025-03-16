@@ -6,9 +6,9 @@ namespace DDD
     {
                 
     }
-    RenderWindow3D::RenderWindow3D(sf::VideoMode mode, const sf::String& title, sf::Uint32 style, const sf::ContextSettings& settings)
+    RenderWindow3D::RenderWindow3D(sf::VideoMode mode, const sf::String& title, std::uint32_t style, sf::State state, const sf::ContextSettings& settings)
     {
-        create(mode, title, style, settings);
+        create(mode, title, style, state, settings);
     }
     RenderWindow3D::RenderWindow3D(sf::WindowHandle handle, const sf::ContextSettings& settings)
     {
