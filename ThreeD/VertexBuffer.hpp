@@ -34,7 +34,7 @@ namespace DDD
         const T& at(std::uint32_t index) const;
         const DrawType getDrawType() const;
         void setAttribLocation(const std::vector<std::uint8_t>& attribLocation);
-        void Update() const;
+        void update() const;
     };
     template <typename T>
     void BindVertexBuffer(const VertexBuffer3D<T>* buffer);

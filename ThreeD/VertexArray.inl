@@ -4,10 +4,10 @@ namespace DDD
 {
     template <typename T>
     VertexArray3D<T>::VertexArray3D()
-		: ID(0)
+		: m_array(0)
 	{
 #ifndef GLES20
-		GLCall(glGenVertexArrays(1, &ID));
+		GLCall(glGenVertexArrays(1, &m_array));
 #endif
 	}
 
@@ -16,7 +16,7 @@ namespace DDD
 		: indexBuffer(indexBuffer), vertexBuffer(vertexBuffer)
 	{
 #ifndef GLES20
-		GLCall(glGenVertexArrays(1, &ID));
+		GLCall(glGenVertexArrays(1, &m_array));
 #endif
 	}
 
@@ -24,14 +24,14 @@ namespace DDD
     VertexArray3D<T>::~VertexArray3D()
 	{
 #ifndef GLES20
-		GLCall(glDeleteVertexArrays(1, &ID));
+		GLCall(glDeleteVertexArrays(1, &m_array));
 #endif
 	}
 
     template <typename T>
     std::uint32_t VertexArray3D<T>::getHandle() const
     {
-        return ID;
+        return m_array;
     }
 
     template <typename T>
@@ -57,14 +57,14 @@ namespace DDD
     void VertexArray3D<T>::UpdateVertexBuffer() const
     {
 		if (vertexBuffer)
-			vertexBuffer->Update();
+			vertexBuffer->update();
     }
 
     template <typename T>
     void VertexArray3D<T>::UpdateIndexBuffer() const
     {
 		if (indexBuffer)
-			indexBuffer->Update();
+			indexBuffer->update();
     }
     
     template <typename T>

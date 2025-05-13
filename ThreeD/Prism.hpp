@@ -8,17 +8,14 @@ namespace DDD
     class Prism3D : public Shape3D, public Drawable3D
     {
     public:
-        Prism3D(float radius = 0, float depth = 0, unsigned int pointCount = 20)
+        Prism3D(float radius = 0, float depth = 0, std::uint32_t pointCount = 20)
             : depth(depth), radius(radius), pointCount(pointCount)
         {
-            fillColor.resize(getPointCount() * 2, sf::Color(255, 255, 255));
+            fillColors.resize(getPointCount() * 2, sf::Color(255, 255, 255));
 
             update();
         }
-        ~Prism3D()
-        {
-
-        }
+        ~Prism3D() = default;
         void setRadius(float radius)
         {
             if (radius != this->radius)
@@ -27,12 +24,11 @@ namespace DDD
                 UpdateRadius();
             }
         }
-        void setPointCount(unsigned int pointCount)
+        void setPointCount(std::uint32_t pointCount)
         {
             if (pointCount != this->pointCount)
             {
                 this->pointCount = pointCount;
-               
                 update();
             }
         }
@@ -53,14 +49,14 @@ namespace DDD
         {
             return depth;
         }
-        virtual unsigned int getPointCount() const
+        virtual std::uint32_t getPointCount() const
         {
             return pointCount + 1;
         }
 
-        virtual sf::Vector3f getPoint(unsigned int index) const
+        virtual sf::Vector3f getPoint(std::uint32_t index) const
         {
-            float angleBetween = 360.0 / (getPointCount() - 1);
+            float angleBetween = 360.f / (getPointCount() - 1);
             if (index == 0)
                 return sf::Vector3f(0, 0, 0);
             else if (index == getPointCount())
@@ -76,14 +72,14 @@ namespace DDD
             else
             {
                 return sf::Vector3f(cos((angleBetween * index) * 0.0174533f)
-                * radius, 0, sin((angleBetween * index) * 0.0174533f) * radius);
+                    * radius, 0, sin((angleBetween * index) * 0.0174533f) * radius);
             }
         }
     private:
         virtual void draw(RenderTarget3D& target, RenderStates3D states) const
         {
             states.transform *= getTransform();
-            target.draw3D(&vao, sf::PrimitiveType::Triangles, states);
+            target.draw(&vbo, &ibo, sf::PrimitiveType::Triangles, states);
         }
         void appendQuad(unsigned int i0, unsigned int i1, unsigned int i2, unsigned int i3)
         {
@@ -102,13 +98,11 @@ namespace DDD
                 vbo.resize(0);
                 return;
             }
-            fillColor.resize(getPointCount() * 2, sf::Color(255, 255, 255));
+            fillColors.resize(getPointCount() * 2, sf::Color(255, 255, 255));
             vbo.clear();
             vbo.resize(getPointCount() * 2);
             for (int i = 0; i < getPointCount() * 2; i++)
-            {
-                vbo[i].setPosition(getPoint(i));
-            }
+                vbo[i].position = getPoint(i);
             ibo.clear();
             for (int j = 0; j < getPointCount() * 2; j += getPointCount())
             {
@@ -131,29 +125,19 @@ namespace DDD
                 }
                 appendQuad(i, i + getPointCount(), i + getPointCount() + 1, i + 1);
             }
-
-
-
-            updateFillColors();
         }
         void UpdateRadius()
         {
             for (int i = 0; i < getPointCount() * 2; i++)
-            {
-                vbo[i].setPosition(getPoint(i));
-            }
-            vao.setBuffers(vbo, ibo);
+                vbo[i].position = getPoint(i);
         }
         void UpdateDepth()
         {
             for (int i = getPointCount(); i < getPointCount() * 2; i++)
-            {
-                vbo[i].setPosition(getPoint(i));
-            }
-            vao.setBuffers(vbo, ibo);
+                vbo[i].position = getPoint(i);
         }
         float radius;
-        unsigned int pointCount;
+        std::uint32_t pointCount;
         float depth;
     };
 }

@@ -7,37 +7,39 @@ namespace DDD
         if (uniformLocationCache.find(name) != uniformLocationCache.end())
             return uniformLocationCache[name];
 
-        GLCall(std::int32_t location = glGetUniformLocation(ID, name.c_str()));
+        GLCall(std::int32_t location = glGetUniformLocation(m_program, name.c_str()));
 
         if (location == -1)
-            std::cout << "Uniform " << name << " not found!" << std::endl;
+            sf::err() << "Uniform " << name << " not found!" << std::endl;
 
         uniformLocationCache[name] = location;
         return location;
     }
     Shader3D::Shader3D()
-        : ID(0)
+        : m_program(0)
     {
-        GLCall(ID = glCreateProgram());
     }
     Shader3D::~Shader3D()
     {
-        GLCall(glDeleteProgram(ID));
+        if (m_program)
+        {
+            GLCall(glDeleteProgram(m_program));
+        }
     }
     std::uint32_t Shader3D::getHandle() const
     {
-        return ID;
+        return m_program;
     }
     bool Shader3D::loadFromFile(const std::string &shaderPath, Type type)
     {
         sf::FileInputStream stream;
         if (!stream.open(shaderPath))
         {
-            std::cout << "Could not open shader!" << std::endl;
-            return 0;
+            sf::err() << "Could not open shader!" << std::endl;
+            return false;
         }
         loadFromStream(stream, type);
-        return 1;
+        return true;
     }
     void Shader3D::loadFromMemory(const std::string& memory, Type type)
     {
@@ -49,6 +51,11 @@ namespace DDD
         std::string tmp;
         tmp.resize(*stream.getSize());
         stream.read(&tmp[0], *stream.getSize());
+
+        if (!m_program)
+        {
+            GLCall(m_program = glCreateProgram());
+        }
 
         GLCall(std::uint32_t shader = glCreateShader(type));
 
@@ -73,39 +80,39 @@ namespace DDD
             return;
         }
 
-        GLCall(glAttachShader(ID, shader));
-        GLCall(glLinkProgram(ID));
+        GLCall(glAttachShader(m_program, shader));
+        GLCall(glLinkProgram(m_program));
 
         result = 0;
-        GLCall(glGetProgramiv(ID, GL_LINK_STATUS, &result));
+        GLCall(glGetProgramiv(m_program, GL_LINK_STATUS, &result));
         if (result == GL_FALSE)
         {
             std::int32_t length;
-            GLCall(glGetProgramiv(ID, GL_INFO_LOG_LENGTH, &length));
+            GLCall(glGetProgramiv(m_program, GL_INFO_LOG_LENGTH, &length));
 
             std::string message;
             message.resize(length);
 
-            GLCall(glGetShaderInfoLog(ID, length, &length, &message[0]));
+            GLCall(glGetShaderInfoLog(m_program, length, &length, &message[0]));
             sf::err() << "Failed to link shader!" << std::endl;
             sf::err() << message << std::endl;
             GLCall(glDeleteShader(shader));
             return;
         }
 
-        GLCall(glValidateProgram(ID));
+        GLCall(glValidateProgram(m_program));
 
         int validateResult;
-        GLCall(glGetProgramiv(ID, GL_VALIDATE_STATUS, &validateResult));
+        GLCall(glGetProgramiv(m_program, GL_VALIDATE_STATUS, &validateResult));
         if (validateResult == GL_FALSE)
         {
             std::int32_t length;
-            GLCall(glGetProgramiv(ID, GL_INFO_LOG_LENGTH, &length));
+            GLCall(glGetProgramiv(m_program, GL_INFO_LOG_LENGTH, &length));
 
             std::string message;
             message.resize(length);
 
-            GLCall(glGetProgramInfoLog(ID, length, &length, &message[0]));
+            GLCall(glGetProgramInfoLog(m_program, length, &length, &message[0]));
             sf::err() << "Failed to validate program!" << std::endl;
             sf::err() << message << std::endl;
             GLCall(glDeleteShader(shader));
@@ -114,7 +121,122 @@ namespace DDD
 
         GLCall(glDeleteShader(shader));
     }
-    void Shader3D::setSamplers(std::uint32_t count)
+    const Shader3D& Shader3D::getDefaultShader()
+    {
+        static Shader3D instance;
+        static bool first = true;
+
+        if (first)
+        {
+            static_cast<void>(instance.loadFromMemory(
+#ifdef SFML_OPENGL_ES
+                "#version 100\n"
+                "attribute vec3 position;"
+                "attribute vec4 color;"
+                "varying vec4 sf_color;"
+#else
+                "#version 330 core\n"
+                "in vec3 position;"
+                "in vec4 color;"
+                "out vec4 sf_color;"
+#endif
+                "uniform mat4 sf_model;"
+                "uniform mat4 sf_view;"
+                "uniform mat4 sf_proj;"
+                "void main()"
+                "{"
+                "    sf_color = color;"
+                "    gl_Position = sf_proj * sf_view * sf_model * vec4(position.xyz, 1.0);"
+                "}", DDD::Shader3D::Vertex));
+            static_cast<void>(instance.loadFromMemory(
+#ifdef SFML_OPENGL_ES
+                "#version 100\n"
+                "precision mediump float;"
+                "varying vec4 sf_color;"
+#else
+                "#version 330 core\n"
+                "in vec4 sf_color;"
+                "out vec4 out_color;"
+#endif
+                "void main()"
+                "{"
+#ifdef SFML_OPENGL_ES
+                "    gl_FragColor = sf_color;"
+#else
+                "    out_color = sf_color;"
+#endif
+                "}", DDD::Shader3D::Fragment));
+            first = false;
+        }
+
+        return instance;
+    }
+
+    const Shader3D& Shader3D::getDefaultTexShader()
+    {
+        static Shader3D instance;
+        static bool first = true;
+
+        if (first)
+        {
+            static_cast<void>(instance.loadFromMemory(
+#ifdef SFML_OPENGL_ES
+                "#version 100\n"
+                "attribute vec3 position;"
+                "attribute vec4 color;"
+                "attribute vec2 texCoord;"
+                "varying vec4 sf_color;"
+                "varying vec2 sf_texCoord;"
+#else
+                "#version 330 core\n"
+                "in vec3 position;"
+                "in vec4 color;"
+                "in vec2 texCoord;"
+                "out vec4 sf_color;"
+                "out vec2 sf_texCoord;"
+#endif
+                "uniform mat4 sf_model;"
+                "uniform mat4 sf_view;"
+                "uniform mat4 sf_proj;"
+                "void main()"
+                "{"
+                "    sf_color = color;"
+                "    sf_texCoord = texCoord;"
+                "    gl_Position = sf_proj * sf_view * sf_model * vec4(position.xyz, 1.0);"
+                "}", DDD::Shader3D::Vertex));
+            static_cast<void>(instance.loadFromMemory(
+
+#ifdef SFML_OPENGL_ES
+                "#version 100\n"
+                "precision mediump float;"
+                "varying vec4 sf_color;"
+                "varying vec2 sf_texCoord;"
+#else
+                "#version 330 core\n"
+                "in vec4 sf_color;"
+                "in vec2 sf_texCoord;"
+                "out vec4 out_color;"
+#endif
+                "uniform sampler2D sf_sampler;"
+                "uniform mat4 sf_texture;"
+                "uniform vec2 factor_npot;"
+                "void main()"
+                "{"
+                "    vec4 coord = sf_texture * vec4(sf_texCoord, 0.0, 1.0);"
+                "    coord.xy = mod(coord.xy, factor_npot.xy);"
+                "    vec4 col = texture2D(sf_sampler, coord.xy) * sf_color;"
+#ifdef SFML_OPENGL_ES
+                "    gl_FragColor = col;"
+#else
+                "    out_color = col;"
+#endif
+                "}", DDD::Shader3D::Fragment));
+            first = false;
+        }
+
+        return instance;
+    }
+    void Shader3D::setSamplers(std::uint32_t count) const
     {
         std::int32_t loc = GetUniformLocation("u_textures");
         std::int32_t* samplers = new std::int32_t[count];

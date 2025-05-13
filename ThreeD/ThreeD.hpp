@@ -20,3 +20,6 @@
 #include "Maths.hpp"
 #include "VertexComponent.hpp"
 #include "DrawType.hpp"
+#include "Cube.hpp"
+#include "Plane.hpp"
+#include "Prism.hpp"

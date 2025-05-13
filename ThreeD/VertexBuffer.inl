@@ -102,7 +102,7 @@ namespace DDD
         this->attribLocation = attribLocation;
     }
     template <typename T>
-    void VertexBuffer3D<T>::Update() const
+    void VertexBuffer3D<T>::update() const
     {
         GLCall(glBindBuffer(GL_ARRAY_BUFFER, ID));
         GLCall(glBufferData(GL_ARRAY_BUFFER, getVertexCount() * getVertexSize(), getFirstVertex(), drawTypeToGLtype(drawType)));

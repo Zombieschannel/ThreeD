@@ -1,6 +1,23 @@
 #include "IndexBuffer.hpp"
 #include "Error.hpp"
 
+namespace
+{
+    std::uint32_t drawTypeToGLtype(DDD::DrawType type)
+    {
+        switch (type)
+        {
+        case DDD::DrawType::Static:
+            return GL_STATIC_DRAW;
+        case DDD::DrawType::Dynamic:
+            return GL_DYNAMIC_DRAW;
+        case DDD::DrawType::Stream:
+            return GL_STREAM_DRAW;
+        }
+        return GL_STATIC_DRAW;
+    }
+}
+
 namespace DDD
 {
     IndexBuffer3D::IndexBuffer3D()
@@ -44,6 +61,10 @@ namespace DDD
     {
         indices.push_back(index);
     }
+    void IndexBuffer3D::replace(const std::vector<std::uint16_t>& indices)
+    {
+        this->indices = indices;
+    }
     void IndexBuffer3D::setDrawType(DrawType type)
     {
         drawType = type;
@@ -52,10 +73,10 @@ namespace DDD
     {
         return drawType;
     }
-    void IndexBuffer3D::Update() const
+    void IndexBuffer3D::update() const
     {
         GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ID));
-        GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(std::uint16_t), indices.data(), static_cast<std::uint32_t>(drawType)));
+        GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(std::uint16_t), indices.data(), drawTypeToGLtype(drawType)));
     }
     void BindIndexBuffer(const IndexBuffer3D* buffer)
     {

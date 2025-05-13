@@ -13,7 +13,7 @@ namespace DDD
         mutable bool needUpdate;
 	public:
         Transformable3D();
-		virtual ~Transformable3D();
+		virtual ~Transformable3D() = default;
 
         void setPosition(const sf::Vector3f& position);
         void setRotation(const sf::Vector3f& angle);

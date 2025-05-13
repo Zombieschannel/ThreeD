@@ -9,7 +9,7 @@ namespace DDD
 	template<typename T>
 	class VertexArray3D
 	{
-		std::uint32_t ID;
+		std::uint32_t m_array;
 		const IndexBuffer3D* indexBuffer = nullptr;
 		const VertexBuffer3D<T>* vertexBuffer = nullptr;
 	public:

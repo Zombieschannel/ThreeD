@@ -14,46 +14,50 @@
 
 namespace DDD
 {
-    RenderTarget3D::~RenderTarget3D()
-    {
-
-    }
     void RenderTarget3D::clear(const ColorF color)
     {
         GLCall(glClearColor(color.r, color.g, color.b, color.a));
         GLCall(glClear(GL_COLOR_BUFFER_BIT));
     }
-    void RenderTarget3D::setView(const View3D& view)
+    void RenderTarget3D::clearDepth()
     {
-        this->view = view;
+        GLCall(glClear(GL_DEPTH_BUFFER_BIT));
     }
-    const View3D& RenderTarget3D::getView() const
+    void RenderTarget3D::setDepthTestingEnabled(const bool state)
     {
-        return view;
+        if (state)
+        {
+            GLCall(glEnable(GL_DEPTH_TEST));
+        }
+        else
+        {
+            GLCall(glDisable(GL_DEPTH_TEST));
+        }
     }
-    void RenderTarget3D::setProjection(const Projection3D& proj)
+    void RenderTarget3D::setView3D(const View3D& view)
     {
-        this->proj = proj;
+        this->m_view3D = view;
     }
-    const Projection3D& RenderTarget3D::getProjection() const
+    const View3D& RenderTarget3D::getView3D() const
     {
-        return proj;
+        return m_view3D;
+    }
+    void RenderTarget3D::setProjection3D(const Projection3D& proj)
+    {
+        this->m_proj3D = proj;
+    }
+    const Projection3D& RenderTarget3D::getProjection3D() const
+    {
+        return m_proj3D;
     }
     void RenderTarget3D::draw(const Drawable3D& drawable, const RenderStates3D& states)
     {
         drawable.draw(*this, states);
     }
-    RenderTarget3D::RenderTarget3D()
-    {
-
-    }
     void RenderTarget3D::initialize()
     {
-        if (initialized)
-            return;
-        proj.setViewport(sf::IntRect({ 0, 0 }, static_cast<sf::Vector2i>(getSize())));
-        proj.setTransform(Transform3D::Ortho(0, getSize().x, 0, getSize().y, -1, 1));
-        initialized = true;
+        m_proj3D.setViewport(sf::IntRect({ 0, 0 }, static_cast<sf::Vector2i>(getSize())));
+        m_proj3D.setTransform(Transform3D::Perspective(75, static_cast<float>(getSize().x) / getSize().y, 1e-2, 1e6));
     }
     std::uint32_t RenderTarget3D::blendFactorToGLtype(const sf::BlendMode::Factor factor)
     {

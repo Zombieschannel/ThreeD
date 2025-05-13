@@ -1,10 +1,7 @@
 #pragma once
 #include <SFML/System.hpp>
-#include <iostream>
 #include <unordered_map>
-#include <cstdint>
 #include "OpenGL.hpp"
-#include "Error.hpp"
 #include "Transform.hpp"
 #include "ColorF.hpp"
 #include "Texture.hpp"
@@ -25,6 +22,7 @@ namespace DDD
 {
 	class Shader3D
 	{
+	    friend class RenderTarget3D;
     public:
         enum Type
         {
@@ -37,7 +35,7 @@ namespace DDD
         };
     private:
         mutable std::unordered_map<std::string, std::int32_t> uniformLocationCache;
-        std::uint32_t ID;
+        std::uint32_t m_program;
         std::int32_t GetUniformLocation(const std::string& name) const;
     public:
         Shader3D();
@@ -46,7 +44,9 @@ namespace DDD
 		bool loadFromFile(const std::string& shaderPath, Type type);
         void loadFromMemory(const std::string& memory, Type type);
 		void loadFromStream(sf::InputStream& stream, Type type);
-        void setSamplers(std::uint32_t count);
+	    static const Shader3D& getDefaultShader();
+	    static const Shader3D& getDefaultTexShader();
+        void setSamplers(std::uint32_t count) const;
         void setUniform(const std::string& name, const Texture3D& v) const;
         void setUniform(const std::string& name, const Transform3D& v) const;
         void setUniformMat4(const std::string& name, const float* first) const;
