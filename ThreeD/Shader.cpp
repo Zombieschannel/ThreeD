@@ -217,14 +217,14 @@ namespace DDD
                 "in vec2 sf_texCoord;"
                 "out vec4 out_color;"
 #endif
-                "uniform sampler2D sf_sampler;"
+                "uniform sampler2D sf_samplers[1];"
                 "uniform mat4 sf_texture;"
                 "uniform vec2 factor_npot;"
                 "void main()"
                 "{"
                 "    vec4 coord = sf_texture * vec4(sf_texCoord, 0.0, 1.0);"
                 "    coord.xy = mod(coord.xy, factor_npot.xy);"
-                "    vec4 col = texture2D(sf_sampler, coord.xy) * sf_color;"
+                "    vec4 col = texture2D(sf_samplers[0], coord.xy) * sf_color;"
 #ifdef SFML_OPENGL_ES
                 "    gl_FragColor = col;"
 #else
@@ -238,7 +238,7 @@ namespace DDD
     }
     void Shader3D::setSamplers(std::uint32_t count) const
     {
-        std::int32_t loc = GetUniformLocation("u_textures");
+        std::int32_t loc = GetUniformLocation("sf_samplers");
         std::int32_t* samplers = new std::int32_t[count];
         for (std::int32_t i = 0; i < count; i++)
             samplers[i] = i;

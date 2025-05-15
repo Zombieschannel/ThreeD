@@ -41,7 +41,7 @@ namespace DDD
                     GLCall(m_shaderCache.texCol = glGetAttribLocation(Shader3D::getDefaultTexShader().getHandle(), "color"));
                     GLCall(m_shaderCache.texTex = glGetAttribLocation(Shader3D::getDefaultTexShader().getHandle(), "texCoord"));
                 }
-                attribLoc = { m_shaderCache.texPos, m_shaderCache.texCol, m_shaderCache.texTex };
+                attribLoc = { static_cast<std::uint8_t>(m_shaderCache.texPos), static_cast<std::uint8_t>(m_shaderCache.texCol), static_cast<std::uint8_t>(m_shaderCache.texTex) };
                 shader = &Shader3D::getDefaultTexShader();
             }
             else
@@ -52,7 +52,7 @@ namespace DDD
                     GLCall(m_shaderCache.defPos = glGetAttribLocation(Shader3D::getDefaultShader().getHandle(), "position"));
                     GLCall(m_shaderCache.defCol = glGetAttribLocation(Shader3D::getDefaultShader().getHandle(), "color"));
                 }
-                attribLoc = { m_shaderCache.defPos, m_shaderCache.defCol };
+                attribLoc = { static_cast<std::uint8_t>(m_shaderCache.defPos), static_cast<std::uint8_t>(m_shaderCache.defCol) };
                 shader = &Shader3D::getDefaultShader();
             }
         }
@@ -66,7 +66,7 @@ namespace DDD
         else
             BindTexture(nullptr);
         if (states.texture)
-            shader->setUniform("u_textures[0]", 0);
+            shader->setUniform("sf_samplers[0]", 0);
         
         std::uint32_t offset = 0;
         for (std::uint32_t i = 0; T::componentCount(i) > 0 && i < attribLoc.size(); i++)
