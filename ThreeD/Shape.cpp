@@ -4,21 +4,21 @@ namespace DDD
 {
     void Shape3D::setFillColor(const ColorF& color, int index)
     {
-        vbo[index].color = color;
+        if (fillColors.size() == vbo.getVertexCount())
+            vbo[index].color = color;
         fillColors[index] = color;
         needUpdate = true;
     }
     void Shape3D::setFillColor(const ColorF& color)
     {
-        for (int i = 0; i < vbo.getVertexCount(); i++)
-        {
+        for (auto& fillColor : fillColors)
+            fillColor = color;
+        for (std::uint32_t i = 0; i < vbo.getVertexCount(); i++)
             vbo[i].color = color;
-            fillColors[i] = color;
-        }
         needUpdate = true;
     }
-    const ColorF& Shape3D::getFillColor(std::uint32_t index) const
+    const ColorF& Shape3D::getFillColor(const std::uint32_t index) const
     {
-        return vbo.at(index).color;
+        return fillColors.at(index);
     }
 }

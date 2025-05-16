@@ -24,7 +24,7 @@ namespace DDD
             vbo[i].position = getPoint(i);
         needUpdate = true;
     }
-    const sf::Vector3f Cube3D::getSize() const
+    sf::Vector3f Cube3D::getSize() const
     {
         return size;
     }

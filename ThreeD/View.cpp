@@ -61,10 +61,4 @@ namespace DDD
     {
         return transform;
     }
-    void View3D::NormalizeRotation()
-    {
-        rotation.x = fmod(rotation.x, 360.0);
-        rotation.y = fmod(rotation.y, 360.0);
-        rotation.z = fmod(rotation.z, 360.0);
-    }
 }
