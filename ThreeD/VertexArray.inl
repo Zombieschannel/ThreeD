@@ -75,10 +75,10 @@ namespace DDD
 #ifndef GLES20
 			GLCall(glBindVertexArray(vao->getHandle()));
 #else
-			if (vao->getVertexBuffer())
-				BindVertexBuffer(vao->getVertexBuffer());
-			if (vao->getIndexBuffer())
-				BindIndexBuffer(*vao->getIndexBuffer());
+	        if (vao->getVertexBuffer())
+	            BindVertexBuffer(vao->getVertexBuffer());
+	        if (vao->getIndexBuffer())
+	            BindIndexBuffer(vao->getIndexBuffer());
 #endif
 		}
 		else
@@ -86,7 +86,7 @@ namespace DDD
 #ifndef GLES20
 			GLCall(glBindVertexArray(0));
 #else
-			BindVertexBuffer(0);
+			BindVertexBuffer<char>(nullptr);
 			BindIndexBuffer(0);
 #endif
 		}
