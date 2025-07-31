@@ -25,21 +25,21 @@ namespace DDD
     }
     const float *Transform3D::getMatrix() const
     {
-        return &matrix[0][0];
+        return &matrix[0];
     }
     sf::Vector3f Transform3D::transformPoint(const sf::Vector3f &point) const
     {
-        return sf::Vector3f(matrix[0][0] * point.x + matrix[0][1] * point.y + matrix[0][2] * point.z + matrix[0][3],
-                            matrix[1][0] * point.x + matrix[1][1] * point.y + matrix[1][2] * point.z + matrix[1][3],
-                            matrix[2][0] * point.x + matrix[2][1] * point.y + matrix[2][2] * point.z + matrix[2][3]);
+        return sf::Vector3f(matrix[0] * point.x + matrix[1] * point.y + matrix[2] * point.z + matrix[3],
+                            matrix[4] * point.x + matrix[5] * point.y + matrix[6] * point.z + matrix[7],
+                            matrix[8] * point.x + matrix[9] * point.y + matrix[10] * point.z + matrix[11]);
     }
     Transform3D Transform3D::transpose() const
     {
         return Transform3D(
-                matrix[0][0], matrix[1][0],matrix[2][0],matrix[3][0],
-                matrix[0][1], matrix[1][1],matrix[2][1],matrix[3][1],
-                matrix[0][2], matrix[1][2],matrix[2][2],matrix[3][2],
-                matrix[0][3], matrix[1][3],matrix[2][3],matrix[3][3]
+                matrix[0], matrix[4],matrix[8],matrix[12],
+                matrix[1], matrix[5],matrix[9],matrix[13],
+                matrix[2], matrix[6],matrix[10],matrix[14],
+                matrix[3], matrix[7],matrix[11],matrix[15]
         );
     }
     Transform3D Transform3D::Perspective(float fov, float aspect, float _near, float _far)
@@ -75,8 +75,8 @@ namespace DDD
     }
     Transform3D& Transform3D::combine(const Transform3D &transform)
     {
-        const float* a = &matrix[0][0];
-        const float* b = &transform.matrix[0][0];
+        const float* a = &matrix[0];
+        const float* b = &transform.matrix[0];
         Transform3D newTransform;
         for (int i = 0; i < 4; i++)
         {
@@ -85,9 +85,9 @@ namespace DDD
                 float sumElements = 0.0f;
                 for (int k = 0; k < 4; k++)
                 {
-                    sumElements += this->matrix[i][k] * transform.matrix[k][j];
+                    sumElements += this->matrix[i * 4 + k] * transform.matrix[k * 4 + j];
                 }
-                newTransform.matrix[i][j] = sumElements;
+                newTransform.matrix[i * 4 + j] = sumElements;
             }
         }
         *this = newTransform;

@@ -15,8 +15,18 @@ namespace DDD
     {
         if (!vbo)
             return;
+        if (ibo)
+            draw(vbo, ibo, ibo->getIndexCount(), type, states);
+        else
+            draw(vbo, nullptr, vbo->getVertexCount(), type, states);
+    }
+    template<typename T>
+    void RenderTarget3D::draw(const VertexBuffer3D<T>* vbo, const IndexBuffer3D* ibo, std::uint32_t count, sf::PrimitiveType type, const RenderStates3D& states)
+    {
+        if (!vbo)
+            return;
         GLCall(glViewport(m_proj3D.getViewport().position.x, m_proj3D.getViewport().position.y, m_proj3D.getViewport().size.x, m_proj3D.getViewport().size.y));
-        
+
         GLCall(glBlendFunc(blendFactorToGLtype(states.blendMode.colorSrcFactor), blendFactorToGLtype(states.blendMode.colorDstFactor)));
         GLCall(glBlendEquation(blendEquationToGLtype(states.blendMode.colorEquation)));
 
@@ -59,6 +69,7 @@ namespace DDD
         shader->setUniform("sf_model", states.transform);
         shader->setUniform("sf_view", getView3D().getTransform());
         shader->setUniform("sf_proj", getProjection3D().getTransform());
+        shader->setUniform("sf_texture", Transform3D::Identity);
 
         TextureSlot(0);
         if (states.texture)
@@ -67,7 +78,7 @@ namespace DDD
             BindTexture(nullptr);
         if (states.texture)
             shader->setUniform("sf_samplers[0]", 0);
-        
+
         std::uint32_t offset = 0;
         for (std::uint32_t i = 0; T::componentCount(i) > 0 && i < attribLoc.size(); i++)
         {
@@ -79,17 +90,16 @@ namespace DDD
 
         if (ibo)
         {
-            GLCall(glDrawElements(primitiveTypeToGLtype(type), ibo->getIndexCount(), GL_UNSIGNED_SHORT, nullptr));
+            GLCall(glDrawElements(primitiveTypeToGLtype(type), count, GL_UNSIGNED_SHORT, nullptr));
         }
         else
         {
-            GLCall(glDrawArrays(primitiveTypeToGLtype(type), 0, vbo->getVertexCount()));
+            GLCall(glDrawArrays(primitiveTypeToGLtype(type), 0, count));
         }
 
         for (std::uint32_t i = 0; T::componentCount(i) > 0 && i < attribLoc.size(); i++)
         {
             GLCall(glDisableVertexAttribArray(attribLoc[i]));
         }
-
     }
 }

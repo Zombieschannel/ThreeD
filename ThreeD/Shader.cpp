@@ -219,11 +219,9 @@ namespace DDD
 #endif
                 "uniform sampler2D sf_samplers[1];"
                 "uniform mat4 sf_texture;"
-                "uniform vec2 factor_npot;"
                 "void main()"
                 "{"
                 "    vec4 coord = sf_texture * vec4(sf_texCoord, 0.0, 1.0);"
-                "    coord.xy = mod(coord.xy, factor_npot.xy);"
                 "    vec4 col = texture2D(sf_samplers[0], coord.xy) * sf_color;"
 #ifdef SFML_OPENGL_ES
                 "    gl_FragColor = col;"

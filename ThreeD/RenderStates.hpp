@@ -22,8 +22,8 @@ namespace DDD
         static const RenderStates3D Default;
         sf::BlendMode blendMode{sf::BlendAlpha};
         Transform3D transform;
-        const Texture3D* texture;
-        const Shader3D* shader;
+        const Texture3D* texture = nullptr;
+        const Shader3D* shader = nullptr;
 		sf::CoordinateType coordinateType{sf::CoordinateType::Pixels};
 	};
 }

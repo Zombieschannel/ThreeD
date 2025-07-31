@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <array>
 #include <SFML/System/Vector2.hpp>
 #include <SFML/System/Vector3.hpp>
 #include "Error.hpp"
@@ -31,7 +32,10 @@ namespace DDD
 
         static const Transform3D Identity;
     private:
-        float matrix[4][4];
+        std::array<float, 16> matrix{1.f, 0.f, 0.f, 0.f,
+                                     0.f, 1.f, 0.f, 0.f,
+                                     0.f, 0.f, 1.f, 0.f,
+                                     0.f, 0.f, 0.f, 1.f};
     };
     
     Transform3D operator*(const Transform3D& left, const Transform3D& right);

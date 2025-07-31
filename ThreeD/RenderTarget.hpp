@@ -20,12 +20,14 @@ namespace DDD
             std::int8_t texTex = -1;
         };
     public:
+        using sf::RenderTarget::draw;
+
         virtual ~RenderTarget3D() = default;
         RenderTarget3D(const RenderTarget3D&) = delete;
 
-        void clear(const ColorF color = ColorF());
+        void clear(ColorF color = ColorF());
         void clearDepth();
-        void setDepthTestingEnabled(const bool state);
+        void setDepthTestingEnabled(bool state);
         void setView3D(const View3D& view);
         const View3D& getView3D() const;
         void setProjection3D(const Projection3D& proj);
@@ -37,16 +39,18 @@ namespace DDD
         void draw(const VertexArray3D<T>* vao, sf::PrimitiveType type = sf::PrimitiveType::Points, const RenderStates3D& states = RenderStates3D::Default);
         template<typename T>
         void draw(const VertexBuffer3D<T>* vbo, const IndexBuffer3D* ibo, sf::PrimitiveType type = sf::PrimitiveType::Points, const RenderStates3D& states = RenderStates3D::Default);
+        template<typename T>
+        void draw(const VertexBuffer3D<T>* vbo, const IndexBuffer3D* ibo, std::uint32_t count, sf::PrimitiveType type = sf::PrimitiveType::Points, const RenderStates3D& states = RenderStates3D::Default);
 
     protected:
         RenderTarget3D() = default;
         void initialize();
     private:
-        std::uint32_t blendFactorToGLtype(const sf::BlendMode::Factor factor);
-        std::uint32_t blendEquationToGLtype(const sf::BlendMode::Equation equation);
-        std::uint32_t primitiveTypeToGLtype(const sf::PrimitiveType equation);
-        std::uint32_t componentToGLtype(const DDD::Component component);
-        std::uint8_t componentToGLsize(const DDD::Component component);
+        std::uint32_t blendFactorToGLtype(sf::BlendMode::Factor factor);
+        std::uint32_t blendEquationToGLtype(sf::BlendMode::Equation equation);
+        std::uint32_t primitiveTypeToGLtype(sf::PrimitiveType equation);
+        std::uint32_t componentToGLtype(DDD::Component component);
+        std::uint8_t componentToGLsize(DDD::Component component);
 
         View3D m_view3D;
         Projection3D m_proj3D;

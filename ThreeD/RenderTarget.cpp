@@ -1,5 +1,7 @@
 #include "RenderTarget.hpp"
 
+#include <SFML/Graphics/Drawable.hpp>
+
 #ifndef GL_MIN
     #define GL_MIN 0
 #endif
