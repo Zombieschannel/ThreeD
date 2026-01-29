@@ -12,7 +12,7 @@
 namespace DDD
 {
 	class RenderWindow3D;
-	class Texture3D
+	class Texture3D : public sf::GlResource
 	{
 		friend class FrameBuffer3D;
 	public:

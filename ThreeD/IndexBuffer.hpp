@@ -1,14 +1,13 @@
 #pragma once
+#include <SFML/Window/GlResource.hpp>
 #include <cstdint>
 #include <vector>
-#include "OpenGL.hpp"
 #include "DrawType.hpp"
 
 namespace DDD
 {
-	class IndexBuffer3D
+	class IndexBuffer3D : public sf::GlResource
 	{
-    private:
 		std::vector<std::uint16_t> indices;
         DrawType drawType = DrawType::Dynamic;
         std::uint32_t ID = 0;

@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics/BlendMode.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
-
 #include "Drawable.hpp"
 #include "View.hpp"
 #include "Projection.hpp"
@@ -9,7 +8,7 @@
 
 namespace DDD
 {
-    class RenderTarget3D : public sf::RenderTarget
+    class RenderTarget3D : public sf::GlResource
     {
         struct ShaderCache
         {
@@ -20,12 +19,10 @@ namespace DDD
             std::int8_t texTex = -1;
         };
     public:
-        using sf::RenderTarget::draw;
 
         virtual ~RenderTarget3D() = default;
         RenderTarget3D(const RenderTarget3D&) = delete;
 
-        void clear(ColorF color = ColorF());
         void clearDepth();
         void setDepthTestingEnabled(bool state);
         void setView3D(const View3D& view);

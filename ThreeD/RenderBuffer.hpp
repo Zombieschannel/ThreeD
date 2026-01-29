@@ -1,10 +1,11 @@
 #pragma once
 #include <SFML/System/Vector2.hpp>
+#include <SFML/Window/GlResource.hpp>
 #include <cstdint>
 
 namespace DDD
 {
-	class RenderBuffer3D
+	class RenderBuffer3D : public sf::GlResource
 	{
 		friend class FrameBuffer3D;
 		std::uint32_t ID;

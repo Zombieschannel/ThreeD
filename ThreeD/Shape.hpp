@@ -4,7 +4,7 @@
 
 namespace DDD
 {
-    class Shape3D : public Transformable3D
+    class Shape3D : public Transformable3D, public sf::GlResource
     {
     public:
         ~Shape3D() override = default;

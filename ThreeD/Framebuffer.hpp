@@ -12,7 +12,7 @@
 
 namespace DDD
 {
-	class FrameBuffer3D : public RenderTarget3D
+	class FrameBuffer3D : public RenderTarget3D, public sf::GlResource
 	{
 	public:
 		enum class Type

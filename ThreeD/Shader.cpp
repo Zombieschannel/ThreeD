@@ -30,7 +30,7 @@ namespace DDD
     {
         return m_program;
     }
-    bool Shader3D::loadFromFile(const std::string &shaderPath, Type type)
+    bool Shader3D::loadFromFile(const std::string &shaderPath, const Type type)
     {
         sf::FileInputStream stream;
         if (!stream.open(shaderPath))
@@ -41,12 +41,12 @@ namespace DDD
         loadFromStream(stream, type);
         return true;
     }
-    void Shader3D::loadFromMemory(const std::string& memory, Type type)
+    void Shader3D::loadFromMemory(const std::string& memory, const Type type)
     {
         sf::MemoryInputStream stream(memory.c_str(), memory.size());
         loadFromStream(stream, type);
     }
-    void Shader3D::loadFromStream(sf::InputStream& stream, Type type)
+    void Shader3D::loadFromStream(sf::InputStream& stream, const Type type)
     {
         std::string tmp;
         tmp.resize(*stream.getSize());
@@ -57,7 +57,15 @@ namespace DDD
             GLCall(m_program = glCreateProgram());
         }
 
-        GLCall(std::uint32_t shader = glCreateShader(type));
+        std::int32_t shaderType = 0;
+        switch (type)
+        {
+        case Type::Vertex: shaderType = GL_VERTEX_SHADER; break;
+        case Type::Fragment: shaderType = GL_FRAGMENT_SHADER; break;
+        case Type::Geometry: shaderType = GL_GEOMETRY_SHADER; break;
+        }
+
+        GLCall(std::uint32_t shader = glCreateShader(shaderType));
 
         const char* data = &tmp[0];
         GLCall(glShaderSource(shader, 1, &data, nullptr));
@@ -245,11 +253,7 @@ namespace DDD
     }
     void Shader3D::setUniform(const std::string& name, const Transform3D& v) const
     {
-#ifdef GLES20
-        GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, v.transpose().getMatrix()));
-#else
         GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_TRUE, v.getMatrix()));
-#endif
     }
     void Shader3D::setUniformMat4(const std::string& name, const float *first) const
     {

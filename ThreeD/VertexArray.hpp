@@ -3,11 +3,10 @@
 #include <vector>
 #include "VertexBuffer.hpp"
 #include "IndexBuffer.hpp"
-
 namespace DDD
 {
 	template<typename T>
-	class VertexArray3D
+	class VertexArray3D : public sf::GlResource
 	{
 		std::uint32_t m_array;
 		const IndexBuffer3D* indexBuffer = nullptr;

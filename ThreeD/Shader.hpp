@@ -1,37 +1,21 @@
 #pragma once
 #include <SFML/System.hpp>
 #include <unordered_map>
-#include "OpenGL.hpp"
 #include "Transform.hpp"
 #include "ColorF.hpp"
 #include "Texture.hpp"
 
-#ifndef GL_COMPUTE_SHADER
-    #define GL_COMPUTE_SHADER 0
-#endif
-#ifndef GL_GEOMETRY_SHADER
-    #define GL_GEOMETRY_SHADER 0
-#endif
-#ifndef GL_TESS_CONTROL_SHADER
-    #define GL_TESS_CONTROL_SHADER 0
-#endif
-#ifndef GL_TESS_EVALUATION_SHADER
-    #define GL_TESS_EVALUATION_SHADER 1
-#endif
 namespace DDD
 {
-	class Shader3D
+	class Shader3D : public sf::GlResource
 	{
 	    friend class RenderTarget3D;
     public:
         enum Type
         {
-            Vertex = GL_VERTEX_SHADER,
-            Fragment = GL_FRAGMENT_SHADER,
-            Compute = GL_COMPUTE_SHADER,
-            Geometry = GL_GEOMETRY_SHADER,
-            TessControl = GL_TESS_CONTROL_SHADER,
-            TessEvaluation = GL_TESS_EVALUATION_SHADER
+            Vertex,
+            Fragment,
+            Geometry,
         };
     private:
         mutable std::unordered_map<std::string, std::int32_t> uniformLocationCache;

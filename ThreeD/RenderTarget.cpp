@@ -2,25 +2,8 @@
 
 #include <SFML/Graphics/Drawable.hpp>
 
-#ifndef GL_MIN
-    #define GL_MIN 0
-#endif
-
-#ifndef GL_MAX
-    #define GL_MAX 0
-#endif
-
-#ifndef GL_QUADS
-#define GL_QUADS 0
-#endif
-
 namespace DDD
 {
-    void RenderTarget3D::clear(const ColorF color)
-    {
-        GLCall(glClearColor(color.r, color.g, color.b, color.a));
-        GLCall(glClear(GL_COLOR_BUFFER_BIT));
-    }
     void RenderTarget3D::clearDepth()
     {
         GLCall(glClear(GL_DEPTH_BUFFER_BIT));

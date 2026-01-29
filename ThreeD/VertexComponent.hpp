@@ -1,6 +1,4 @@
 #pragma once
-#include "OpenGL.hpp"
-
 namespace DDD
 {
     enum class Component

@@ -1,8 +1,9 @@
 #include "Texture.hpp"
+#include "FuncInit.hpp"
 
 namespace
 {
-    int typeToGLsize(DDD::Texture3D::Type type)
+    std::int32_t typeToGLsize(const DDD::Texture3D::Type type)
     {
         switch (type)
         {

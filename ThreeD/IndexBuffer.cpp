@@ -1,6 +1,6 @@
 #include "IndexBuffer.hpp"
 #include "Error.hpp"
-
+#include <GL/gl.h>
 namespace
 {
     std::uint32_t drawTypeToGLtype(DDD::DrawType type)

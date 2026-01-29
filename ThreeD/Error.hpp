@@ -2,7 +2,8 @@
 #include <SFML/Config.hpp>
 #include <SFML/System/Err.hpp>
 #include <iostream>
-#include "OpenGL.hpp"
+#include <cstdint>
+#include "glad/glad.h"
 
 #ifndef NDEBUG
 #define GLCall(x) DDD::GLClearError();\
@@ -16,7 +17,7 @@ namespace DDD
 {
 	static void GLClearError()
 	{
-		for (short i = 0; i < INT16_MAX - 1 && (glGetError() != GL_NO_ERROR); i++);
+		for (std::int16_t i = 0; i < INT16_MAX - 1 && (glGetError() != GL_NO_ERROR); i++);
 	}
 	static bool GLLogCall()
 	{

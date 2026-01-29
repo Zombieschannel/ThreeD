@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics/PrimitiveType.hpp>
 #include <vector>
+#include <SFML/Window/GlResource.hpp>
+
 #include "Vertex.hpp"
 #include "Error.hpp"
 #include "DrawType.hpp"
@@ -8,9 +10,8 @@
 namespace DDD
 {
     template<typename T>
-    class VertexBuffer3D
+    class VertexBuffer3D : public sf::GlResource
     {
-    private:
         std::vector<T> vertices;
         DrawType drawType = DrawType::Dynamic;
         std::uint32_t ID;
