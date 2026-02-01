@@ -20,14 +20,16 @@ namespace DDD
         GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, static_cast<std::uint32_t>(type), GL_TEXTURE_2D, texture.ID, 0));
         size = texture.getSize();
         texture.flipped = 1;
-        initialize();
+        RenderTarget::initialize();
+        RenderTarget3D::initialize();
     }
     void FrameBuffer3D::attachRenderBuffer(const RenderBuffer3D &renderbuffer, Type type)
     {
         GLCall(glBindFramebuffer(GL_FRAMEBUFFER, ID));
         GLCall(glFramebufferRenderbuffer(GL_FRAMEBUFFER, static_cast<std::uint32_t>(type), GL_RENDERBUFFER, renderbuffer.ID));
         size = renderbuffer.getSize();
-        initialize();
+        RenderTarget::initialize();
+        RenderTarget3D::initialize();
     }
     sf::Vector2u FrameBuffer3D::getSize() const
     {

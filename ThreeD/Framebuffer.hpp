@@ -12,7 +12,7 @@
 
 namespace DDD
 {
-	class FrameBuffer3D : public RenderTarget3D, public sf::GlResource
+	class FrameBuffer3D : public RenderTarget3D, public sf::RenderTarget, public sf::GlResource
 	{
 	public:
 		enum class Type
@@ -26,6 +26,10 @@ namespace DDD
 		std::uint32_t ID;
 		sf::Vector2u size;
 	public:
+		using sf::RenderTarget::clear;
+		// using RenderTarget3D::clear;
+		using sf::RenderTarget::draw;
+		using RenderTarget3D::draw;
 		FrameBuffer3D();
 		~FrameBuffer3D();
 
