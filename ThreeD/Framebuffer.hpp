@@ -26,8 +26,6 @@ namespace DDD
 		std::uint32_t ID;
 		sf::Vector2u size;
 	public:
-		using sf::RenderTarget::clear;
-		// using RenderTarget3D::clear;
 		using sf::RenderTarget::draw;
 		using RenderTarget3D::draw;
 		FrameBuffer3D();

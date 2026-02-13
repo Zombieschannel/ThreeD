@@ -23,6 +23,7 @@ namespace DDD
         virtual ~RenderTarget3D() = default;
         RenderTarget3D(const RenderTarget3D&) = delete;
 
+        void clearColorF(ColorF color = ColorF());
         void clearDepth();
         void setDepthTestingEnabled(bool state);
         void setView3D(const View3D& view);

@@ -4,6 +4,11 @@
 
 namespace DDD
 {
+    void RenderTarget3D::clearColorF(const ColorF color)
+    {
+        GLCall(glClearColor(color.r, color.g, color.b, color.a));
+        GLCall(glClear(GL_COLOR_BUFFER_BIT));
+    }
     void RenderTarget3D::clearDepth()
     {
         GLCall(glClear(GL_DEPTH_BUFFER_BIT));
