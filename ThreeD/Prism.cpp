@@ -48,7 +48,7 @@ namespace DDD
 
     sf::Vector3f Prism3D::getPoint(std::uint32_t index) const
     {
-        float angleBetween = 360.f / (getPointCount() - 1);
+        const float angleBetween = 360.f / (getPointCount() - 1);
         if (index == 0)
             return {0.f, 0.f, 0.f};
         if (index == getPointCount())
@@ -58,10 +58,10 @@ namespace DDD
         if (index > getPointCount())
         {
             index -= getPointCount();
-            return {std::cos((angleBetween * index) * 0.0174533f)
+            return {std::cosf((angleBetween * index) * 0.0174533f)
                                 * radius, height, std::sin((angleBetween * index) * 0.0174533f) * radius};
         }
-        return {std::cos((angleBetween * index) * 0.0174533f)
+        return {std::cosf((angleBetween * index) * 0.0174533f)
                             * radius, 0.f, std::sin((angleBetween * index) * 0.0174533f) * radius};
     }
     void Prism3D::draw(RenderTarget3D& target, RenderStates3D states) const
@@ -92,30 +92,30 @@ namespace DDD
             return;
         }
         vbo.clear();
-        vbo.resize(getPointCount() * 2);
-        for (std::uint32_t i = 0; i < getPointCount() * 2; i++)
+        vbo.resize(count * 2);
+        for (std::uint32_t i = 0; i < count * 2; i++)
             vbo[i].position = getPoint(i);
         ibo.clear();
-        for (std::uint32_t j = 0; j < getPointCount() * 2; j += getPointCount())
+        for (std::uint32_t j = 0; j < count * 2; j += count)
         {
-            for (std::uint32_t i = 1; i < getPointCount(); i++)
+            for (std::uint32_t i = 1; i < count; i++)
             {
                 ibo.append(j + 0);
                 ibo.append(j + i);
-                if (j + i + 1 < j + getPointCount())
+                if (j + i + 1 < j + count)
                     ibo.append(j + i + 1);
                 else
                     ibo.append(j + 1);
             }
         }
-        for (std::uint32_t i = 1; i < getPointCount(); i++)
+        for (std::uint32_t i = 1; i < count; i++)
         {
-            if (i + 1 >= getPointCount())
+            if (i + 1 >= count)
             {
-                appendQuad(i, i + getPointCount(), getPointCount() + 1, 1);
+                appendQuad(i, i + count, count + 1, 1);
                 continue;
             }
-            appendQuad(i, i + getPointCount(), i + getPointCount() + 1, i + 1);
+            appendQuad(i, i + count, i + count + 1, i + 1);
         }
         for (std::uint32_t i = 0; i < fillColors.size(); i++)
             vbo[i].color = fillColors[i];

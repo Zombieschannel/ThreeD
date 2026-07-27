@@ -1,9 +1,12 @@
 #pragma once
+#include <SFML/Graphics/Transform.hpp>
 #include <SFML/System.hpp>
-#include <unordered_map>
 #include "Transform.hpp"
 #include "ColorF.hpp"
 #include "Texture.hpp"
+#include <unordered_map>
+#include <filesystem>
+
 
 namespace DDD
 {
@@ -25,17 +28,18 @@ namespace DDD
         Shader3D();
         ~Shader3D();
         std::uint32_t getHandle() const;
-		bool loadFromFile(const std::string& shaderPath, Type type);
-        void loadFromMemory(const std::string& memory, Type type);
+		bool loadFromFile(const std::filesystem::path& path, Type type);
+        void loadFromMemory(const void* data, std::uint32_t size, Type type);
 		void loadFromStream(sf::InputStream& stream, Type type);
 	    static const Shader3D& getDefaultShader();
 	    static const Shader3D& getDefaultTexShader();
         void setSamplers(std::uint32_t count) const;
         void setUniform(const std::string& name, const Texture3D& v) const;
         void setUniform(const std::string& name, const Transform3D& v) const;
+        void setUniformMat3(const std::string& name, const float* first) const;
         void setUniformMat4(const std::string& name, const float* first) const;
-        void setUniform(const std::string& name, const float v) const;
-        void setUniform(const std::string& name, const std::int32_t v) const;
+        void setUniform(const std::string& name, float v) const;
+        void setUniform(const std::string& name, std::int32_t v) const;
         void setUniform(const std::string& name, const sf::Color& v) const;
         void setUniform(const std::string& name, const ColorF& v) const;
         void setUniform(const std::string& name, const sf::Vector3f& v) const;

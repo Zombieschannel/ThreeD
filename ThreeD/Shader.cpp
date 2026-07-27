@@ -4,10 +4,10 @@ namespace DDD
 {
     std::int32_t Shader3D::GetUniformLocation(const std::string& name) const
     {
-        if (uniformLocationCache.find(name) != uniformLocationCache.end())
+        if (uniformLocationCache.contains(name))
             return uniformLocationCache[name];
 
-        GLCall(std::int32_t location = glGetUniformLocation(m_program, name.c_str()));
+        GLCall(const std::int32_t location = glGetUniformLocation(m_program, name.c_str()));
 
         if (location == -1)
             sf::err() << "Uniform " << name << " not found!" << std::endl;
@@ -30,10 +30,10 @@ namespace DDD
     {
         return m_program;
     }
-    bool Shader3D::loadFromFile(const std::string &shaderPath, const Type type)
+    bool Shader3D::loadFromFile(const std::filesystem::path& path, const Type type)
     {
         sf::FileInputStream stream;
-        if (!stream.open(shaderPath))
+        if (!stream.open(path))
         {
             sf::err() << "Could not open shader!" << std::endl;
             return false;
@@ -41,16 +41,17 @@ namespace DDD
         loadFromStream(stream, type);
         return true;
     }
-    void Shader3D::loadFromMemory(const std::string& memory, const Type type)
+    void Shader3D::loadFromMemory(const void* data, const std::uint32_t size, const Type type)
     {
-        sf::MemoryInputStream stream(memory.c_str(), memory.size());
+        sf::MemoryInputStream stream(data, size);
         loadFromStream(stream, type);
     }
     void Shader3D::loadFromStream(sf::InputStream& stream, const Type type)
     {
         std::string tmp;
         tmp.resize(*stream.getSize());
-        stream.read(&tmp[0], *stream.getSize());
+        if (!stream.read(&tmp[0], *stream.getSize()))
+            return;
 
         if (!m_program)
         {
@@ -60,9 +61,9 @@ namespace DDD
         std::int32_t shaderType = 0;
         switch (type)
         {
-        case Type::Vertex: shaderType = GL_VERTEX_SHADER; break;
-        case Type::Fragment: shaderType = GL_FRAGMENT_SHADER; break;
-        case Type::Geometry: shaderType = GL_GEOMETRY_SHADER; break;
+        case Vertex: shaderType = GL_VERTEX_SHADER; break;
+        case Fragment: shaderType = GL_FRAGMENT_SHADER; break;
+        case Geometry: shaderType = GL_GEOMETRY_SHADER; break;
         }
 
         GLCall(std::uint32_t shader = glCreateShader(shaderType));
@@ -136,44 +137,38 @@ namespace DDD
 
         if (first)
         {
-            static_cast<void>(instance.loadFromMemory(
+            const std::string v =
 #ifdef SFML_OPENGL_ES
-                "#version 100\n"
-                "attribute vec3 position;"
-                "attribute vec4 color;"
-                "varying vec4 sf_color;"
+            "#version 300 es\n"
 #else
-                "#version 330 core\n"
-                "in vec3 position;"
-                "in vec4 color;"
-                "out vec4 sf_color;"
+            "#version 330 core\n"
 #endif
-                "uniform mat4 sf_model;"
-                "uniform mat4 sf_view;"
-                "uniform mat4 sf_proj;"
-                "void main()"
-                "{"
-                "    sf_color = color;"
-                "    gl_Position = sf_proj * sf_view * sf_model * vec4(position.xyz, 1.0);"
-                "}", DDD::Shader3D::Vertex));
-            static_cast<void>(instance.loadFromMemory(
+            "in vec3 position;"
+            "in vec4 color;"
+            "out vec4 out_color;"
+            "uniform mat4 DDD_model;"
+            "uniform mat4 DDD_view;"
+            "uniform mat4 DDD_proj;"
+            "void main()"
+            "{"
+            "    out_color = color;"
+            "    gl_Position = DDD_proj * DDD_view * DDD_model * vec4(position.xyz, 1.0);"
+            "}";
+            const std::string f =
 #ifdef SFML_OPENGL_ES
-                "#version 100\n"
-                "precision mediump float;"
-                "varying vec4 sf_color;"
+            "#version 300 es\n"
+            "precision mediump float;"
 #else
-                "#version 330 core\n"
-                "in vec4 sf_color;"
-                "out vec4 out_color;"
+            "#version 330 core\n"
 #endif
-                "void main()"
-                "{"
-#ifdef SFML_OPENGL_ES
-                "    gl_FragColor = sf_color;"
-#else
-                "    out_color = sf_color;"
-#endif
-                "}", DDD::Shader3D::Fragment));
+            "in vec4 out_color;"
+            "out vec4 DDD_color;"
+            "void main()"
+            "{"
+            "    DDD_color = out_color;"
+            "}";
+            instance.loadFromMemory(v.c_str(), v.length(), Vertex);
+            instance.loadFromMemory(f.c_str(), f.length(), Fragment);
             first = false;
         }
 
@@ -187,73 +182,67 @@ namespace DDD
 
         if (first)
         {
-            static_cast<void>(instance.loadFromMemory(
+            const std::string v =
 #ifdef SFML_OPENGL_ES
-                "#version 100\n"
-                "attribute vec3 position;"
-                "attribute vec4 color;"
-                "attribute vec2 texCoord;"
-                "varying vec4 sf_color;"
-                "varying vec2 sf_texCoord;"
+            "#version 300 es\n"
 #else
-                "#version 330 core\n"
-                "in vec3 position;"
-                "in vec4 color;"
-                "in vec2 texCoord;"
-                "out vec4 sf_color;"
-                "out vec2 sf_texCoord;"
+            "#version 330 core\n"
 #endif
-                "uniform mat4 sf_model;"
-                "uniform mat4 sf_view;"
-                "uniform mat4 sf_proj;"
-                "void main()"
-                "{"
-                "    sf_color = color;"
-                "    sf_texCoord = texCoord;"
-                "    gl_Position = sf_proj * sf_view * sf_model * vec4(position.xyz, 1.0);"
-                "}", DDD::Shader3D::Vertex));
-            static_cast<void>(instance.loadFromMemory(
-
+            "in vec3 position;"
+            "in vec4 color;"
+            "in vec2 texCoord;"
+            "out vec4 out_color;"
+            "out vec2 out_texCoord;"
+            "uniform mat4 DDD_model;"
+            "uniform mat4 DDD_view;"
+            "uniform mat4 DDD_proj;"
+            "void main()"
+            "{"
+            "    out_color = color;"
+            "    out_texCoord = texCoord;"
+            "    gl_Position = DDD_proj * DDD_view * DDD_model * vec4(position.xyz, 1.0);"
+            "}";
+            const std::string f =
 #ifdef SFML_OPENGL_ES
-                "#version 100\n"
-                "precision mediump float;"
-                "varying vec4 sf_color;"
-                "varying vec2 sf_texCoord;"
+            "#version 300 es\n"
+            "precision mediump float;"
 #else
-                "#version 330 core\n"
-                "in vec4 sf_color;"
-                "in vec2 sf_texCoord;"
-                "out vec4 out_color;"
+            "#version 330 core\n"
 #endif
-                "uniform sampler2D sf_samplers[1];"
-                "uniform mat4 sf_texture;"
-                "void main()"
-                "{"
-                "    vec4 coord = sf_texture * vec4(sf_texCoord, 0.0, 1.0);"
-                "    vec4 col = texture2D(sf_samplers[0], coord.xy) * sf_color;"
-#ifdef SFML_OPENGL_ES
-                "    gl_FragColor = col;"
-#else
-                "    out_color = col;"
-#endif
-                "}", DDD::Shader3D::Fragment));
+            "in vec4 out_color;"
+            "in vec2 out_texCoord;"
+            "out vec4 DDD_color;"
+            "uniform sampler2D DDD_samplers[1];"
+            "uniform mat4 DDD_texture;"
+            "void main()"
+            "{"
+            "    vec4 coord = DDD_texture * vec4(out_texCoord, 0.0, 1.0);"
+            "    vec4 col = texture2D(DDD_samplers[0], coord.xy) * out_color;"
+            "    DDD_color = col;"
+            "}";
+            instance.loadFromMemory(v.c_str(), v.length(), Vertex);
+            instance.loadFromMemory(f.c_str(), f.length(), Fragment);
             first = false;
         }
 
         return instance;
     }
-    void Shader3D::setSamplers(std::uint32_t count) const
+    void Shader3D::setSamplers(const std::uint32_t count) const
     {
-        std::int32_t loc = GetUniformLocation("sf_samplers");
-        std::int32_t* samplers = new std::int32_t[count];
+        const std::int32_t loc = GetUniformLocation("DDD_samplers");
+        std::vector<std::int32_t> samplers;
+        samplers.resize(count);
         for (std::int32_t i = 0; i < count; i++)
-            samplers[i] = i;
-        GLCall(glUniform1iv(loc, count, samplers));
-        delete[] samplers;
+            samplers.at(i) = i;
+        GLCall(glUniform1iv(loc, count, &samplers[0]));
     }
     void Shader3D::setUniform(const std::string& name, const Transform3D& v) const
     {
-        GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_TRUE, v.getMatrix()));
+        GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, v.getMatrix()));
+    }
+    void Shader3D::setUniformMat3(const std::string& name, const float *first) const
+    {
+        GLCall(glUniformMatrix3fv(GetUniformLocation(name), 1, GL_FALSE, first));
     }
     void Shader3D::setUniformMat4(const std::string& name, const float *first) const
     {

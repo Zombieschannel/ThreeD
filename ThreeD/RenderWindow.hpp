@@ -17,7 +17,7 @@ namespace DDD
         using sf::RenderTarget::draw;
         using RenderTarget3D::draw;
 
-        ~RenderWindow3D() = default;
+        ~RenderWindow3D() override = default;
 
         sf::Vector2u getSize() const override;
     private:

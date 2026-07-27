@@ -18,17 +18,17 @@ namespace DDD
                     float a30, float a31, float a32, float a33);
 
         const float* getMatrix() const;
-        sf::Vector3f transformPoint(const sf::Vector3f& point) const;
+        sf::Vector3f transformPoint(sf::Vector3f point) const;
         Transform3D transpose() const;
 
-        static Transform3D Perspective(float fov, float aspect, float near, float m_far);
+        static Transform3D Perspective(sf::Angle fov, float aspect, float near, float m_far);
         static Transform3D Ortho(float left, float right, float top, float bottom, float m_near, float m_far);
 
         Transform3D& combine(const Transform3D& transform);
-        Transform3D& translate(const sf::Vector3f& offset);
+        Transform3D& translate(sf::Vector3f offset);
         Transform3D& rotate(sf::Vector3f angle);
-        Transform3D& scale(const sf::Vector3f& factors);
-        Transform3D& scale(const sf::Vector3f& factors, const sf::Vector3f& center);
+        Transform3D& scale(sf::Vector3f factors);
+        Transform3D& scale(sf::Vector3f factors, sf::Vector3f center);
 
         static const Transform3D Identity;
     private:

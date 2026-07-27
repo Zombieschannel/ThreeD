@@ -1,6 +1,7 @@
 #pragma once
 #include "Transformable.hpp"
-#include "VertexArray.hpp"
+#include "VertexBuffer.hpp"
+#include "IndexBuffer.hpp"
 
 namespace DDD
 {

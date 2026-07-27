@@ -20,7 +20,7 @@ namespace DDD
     void Cube3D::setSize(const sf::Vector3f size)
     {
         this->size = size;
-        for (int i = 0; i < getPointCount(); i++)
+        for (int32_t i = 0; i < getPointCount(); i++)
             vbo[i].position = getPoint(i);
         needUpdate = true;
     }
@@ -32,7 +32,7 @@ namespace DDD
     {
         return 8;
     }
-    sf::Vector3f Cube3D::getPoint(std::uint32_t index) const
+    sf::Vector3f Cube3D::getPoint(const std::uint32_t index) const
     {
         switch (index)
         {

@@ -4,6 +4,13 @@
 
 namespace DDD
 {
+    RenderTarget3D::~RenderTarget3D()
+    {
+        if (m_defaultVAO)
+        {
+            GLCall(glDeleteVertexArrays(1, &m_defaultVAO));
+        }
+    }
     void RenderTarget3D::clearColorF(const ColorF color)
     {
         GLCall(glClearColor(color.r, color.g, color.b, color.a));
@@ -47,7 +54,12 @@ namespace DDD
     void RenderTarget3D::initialize()
     {
         m_proj3D.setViewport(sf::IntRect({ 0, 0 }, static_cast<sf::Vector2i>(getSize())));
-        m_proj3D.setTransform(Transform3D::Perspective(75, static_cast<float>(getSize().x) / getSize().y, 1e-2, 1e6));
+        m_proj3D.setTransform(Transform3D::Perspective(sf::degrees(75), static_cast<float>(getSize().x) / getSize().y, 1e-2, 1e6));
+
+        if (!m_defaultVAO)
+        {
+            GLCall(glGenVertexArrays(1, &m_defaultVAO));
+        }
     }
     std::uint32_t RenderTarget3D::blendFactorToGLtype(const sf::BlendMode::Factor factor)
     {
@@ -91,30 +103,32 @@ namespace DDD
         }
         return GL_POINTS;
     }
-    std::uint32_t RenderTarget3D::componentToGLtype(const DDD::Component component)
+    std::uint32_t RenderTarget3D::componentToGLtype(const Component component)
     {
         switch (component)
         {
-        case DDD::Component::Byte: return GL_BYTE;
-        case DDD::Component::UByte: return GL_UNSIGNED_BYTE;
-        case DDD::Component::Short: return GL_SHORT;
-        case DDD::Component::UShort: return GL_UNSIGNED_SHORT;
-        case DDD::Component::Int: return GL_INT;
-        case DDD::Component::UInt: return GL_UNSIGNED_INT;
-        case DDD::Component::Float: return GL_FLOAT;
+        case Component::Byte: return GL_BYTE;
+        case Component::UByte: return GL_UNSIGNED_BYTE;
+        case Component::Short: return GL_SHORT;
+        case Component::UShort: return GL_UNSIGNED_SHORT;
+        case Component::Int: return GL_INT;
+        case Component::UInt: return GL_UNSIGNED_INT;
+        case Component::Float: return GL_FLOAT;
         }
+        return 0;
     }
-    std::uint8_t RenderTarget3D::componentToGLsize(const DDD::Component component)
+    std::uint8_t RenderTarget3D::componentToGLsize(const Component component)
     {
         switch (component)
         {
-        case DDD::Component::Byte: return 1;
-        case DDD::Component::UByte: return 1;
-        case DDD::Component::Short: return 2;
-        case DDD::Component::UShort: return 2;
-        case DDD::Component::Int: return 4;
-        case DDD::Component::UInt: return 4;
-        case DDD::Component::Float: return 4;
+        case Component::Byte: return 1;
+        case Component::UByte: return 1;
+        case Component::Short: return 2;
+        case Component::UShort: return 2;
+        case Component::Int: return 4;
+        case Component::UInt: return 4;
+        case Component::Float: return 4;
         }
+        return 0;
     }
 }

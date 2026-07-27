@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics/PrimitiveType.hpp>
-#include <vector>
 #include <SFML/Window/GlResource.hpp>
+#include <vector>
 
 #include "Vertex.hpp"
 #include "Error.hpp"
@@ -14,11 +14,10 @@ namespace DDD
     {
         std::vector<T> vertices;
         DrawType drawType = DrawType::Dynamic;
-        std::uint32_t ID;
+        std::uint32_t ID = 0;
         std::vector<std::uint8_t> attribLocation;
     public:
         VertexBuffer3D();
-        VertexBuffer3D(sf::PrimitiveType type, std::uint32_t vertexCount = 0);
         ~VertexBuffer3D();
 
         std::uint32_t getHandle() const;
@@ -29,11 +28,11 @@ namespace DDD
 
         T& operator[] (std::uint32_t index);
         void clear();
-        void resize(const std::uint32_t vertexCount);
+        void resize(std::uint32_t vertexCount);
         void append(const T& vertex);
         void setDrawType(DrawType type);
         const T& at(std::uint32_t index) const;
-        const DrawType getDrawType() const;
+        DrawType getDrawType() const;
         void setAttribLocation(const std::vector<std::uint8_t>& attribLocation);
         void update() const;
     };

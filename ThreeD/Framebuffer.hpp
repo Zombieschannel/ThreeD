@@ -6,13 +6,9 @@
 #include "RenderBuffer.hpp"
 #include "RenderTarget.hpp"
 
-#ifndef GL_DEPTH_STENCIL_ATTACHMENT
-	#define GL_DEPTH_STENCIL_ATTACHMENT -1
-#endif
-
 namespace DDD
 {
-	class FrameBuffer3D : public RenderTarget3D, public sf::RenderTarget, public sf::GlResource
+	class FrameBuffer3D : public RenderTarget3D, public sf::RenderTarget
 	{
 	public:
 		enum class Type
@@ -23,10 +19,10 @@ namespace DDD
 			DepthStencil = GL_DEPTH_STENCIL_ATTACHMENT,
 		};
 	private:
-		std::uint32_t ID;
+		std::uint32_t ID = 0;
 		sf::Vector2u size;
 	public:
-		using sf::RenderTarget::draw;
+		using RenderTarget::draw;
 		using RenderTarget3D::draw;
 		FrameBuffer3D();
 		~FrameBuffer3D();

@@ -1,10 +1,13 @@
 #pragma once
 #include <SFML/Graphics/BlendMode.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Window/GlResource.hpp>
 #include "Drawable.hpp"
 #include "View.hpp"
 #include "Projection.hpp"
-#include "VertexArray.hpp"
+#include "ColorF.hpp"
+#include "VertexBuffer.hpp"
+#include "IndexBuffer.hpp"
 
 namespace DDD
 {
@@ -20,7 +23,7 @@ namespace DDD
         };
     public:
 
-        virtual ~RenderTarget3D() = default;
+        virtual ~RenderTarget3D();
         RenderTarget3D(const RenderTarget3D&) = delete;
 
         void clearColorF(ColorF color = ColorF());
@@ -33,8 +36,6 @@ namespace DDD
         virtual sf::Vector2u getSize() const = 0;
 
         void draw(const Drawable3D& drawable, const RenderStates3D& states = RenderStates3D::Default);
-        template<typename T>
-        void draw(const VertexArray3D<T>* vao, sf::PrimitiveType type = sf::PrimitiveType::Points, const RenderStates3D& states = RenderStates3D::Default);
         template<typename T>
         void draw(const VertexBuffer3D<T>* vbo, const IndexBuffer3D* ibo, sf::PrimitiveType type = sf::PrimitiveType::Points, const RenderStates3D& states = RenderStates3D::Default);
         template<typename T>
@@ -53,6 +54,7 @@ namespace DDD
         View3D m_view3D;
         Projection3D m_proj3D;
         ShaderCache m_shaderCache;
+        std::uint32_t m_defaultVAO = 0;
    };
 }
 

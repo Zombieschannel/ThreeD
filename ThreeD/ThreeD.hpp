@@ -1,6 +1,5 @@
 #pragma once
 #include "Vertex.hpp"
-#include "VertexArray.hpp"
 #include "VertexBuffer.hpp"
 #include "IndexBuffer.hpp"
 #include "Shader.hpp"

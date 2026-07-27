@@ -3,7 +3,7 @@
 
 namespace
 {
-    std::uint32_t drawTypeToGLtype(DDD::DrawType type)
+    std::uint32_t drawTypeToGLtype(const DDD::DrawType type)
     {
         switch (type)
         {
@@ -24,12 +24,6 @@ namespace DDD
     VertexBuffer3D<T>::VertexBuffer3D()
     {
         GLCall(glGenBuffers(1, &ID));
-    }
-    template <typename T>
-    VertexBuffer3D<T>::VertexBuffer3D(sf::PrimitiveType type, std::uint32_t vertexCount)
-    {
-        GLCall(glGenBuffers(1, &ID));
-        vertices.resize(vertexCount);
     }
     template <typename T>
     VertexBuffer3D<T>::~VertexBuffer3D()
@@ -82,17 +76,17 @@ namespace DDD
         vertices.push_back(vertex);
     }
     template <typename T>
-    void VertexBuffer3D<T>::setDrawType(DrawType type)
+    void VertexBuffer3D<T>::setDrawType(const DrawType type)
     {
         drawType = type;
     }
     template <typename T>
-    const T& VertexBuffer3D<T>::at(std::uint32_t index) const
+    const T& VertexBuffer3D<T>::at(const std::uint32_t index) const
     {
-        return vertices[index];
+        return vertices.at(index);
     }
     template <typename T>
-    const DrawType VertexBuffer3D<T>::getDrawType() const
+    DrawType VertexBuffer3D<T>::getDrawType() const
     {
         return drawType;
     }

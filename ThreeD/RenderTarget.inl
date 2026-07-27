@@ -4,13 +4,6 @@
 namespace DDD
 {
     template<typename T>
-    void RenderTarget3D::draw(const VertexArray3D<T>* vao, sf::PrimitiveType type, const RenderStates3D& states)
-    {
-        if (!vao)
-            return;
-        draw(vao->getVertexBuffer(), vao->getIndexBuffer(), type, states);
-    }
-    template<typename T>
     void RenderTarget3D::draw(const VertexBuffer3D<T>* vbo, const IndexBuffer3D* ibo, sf::PrimitiveType type, const RenderStates3D& states)
     {
         if (!vbo)
@@ -21,7 +14,7 @@ namespace DDD
             draw(vbo, nullptr, vbo->getVertexCount(), type, states);
     }
     template<typename T>
-    void RenderTarget3D::draw(const VertexBuffer3D<T>* vbo, const IndexBuffer3D* ibo, std::uint32_t count, sf::PrimitiveType type, const RenderStates3D& states)
+    void RenderTarget3D::draw(const VertexBuffer3D<T>* vbo, const IndexBuffer3D* ibo, const std::uint32_t count, const sf::PrimitiveType type, const RenderStates3D& states)
     {
         if (!vbo)
             return;
@@ -30,6 +23,7 @@ namespace DDD
         GLCall(glBlendFunc(blendFactorToGLtype(states.blendMode.colorSrcFactor), blendFactorToGLtype(states.blendMode.colorDstFactor)));
         GLCall(glBlendEquation(blendEquationToGLtype(states.blendMode.colorEquation)));
 
+        GLCall(glBindVertexArray(m_defaultVAO));
         BindVertexBuffer(vbo);
         BindIndexBuffer(ibo);
 
@@ -66,10 +60,10 @@ namespace DDD
                 shader = &Shader3D::getDefaultShader();
             }
         }
-        shader->setUniform("sf_model", states.transform);
-        shader->setUniform("sf_view", getView3D().getTransform());
-        shader->setUniform("sf_proj", getProjection3D().getTransform());
-        shader->setUniform("sf_texture", Transform3D::Identity);
+        shader->setUniform("DDD_model", states.transform);
+        shader->setUniform("DDD_view", getView3D().getTransform());
+        shader->setUniform("DDD_proj", getProjection3D().getTransform());
+        shader->setUniform("DDD_texture", Transform3D::Identity);
 
         TextureSlot(0);
         if (states.texture)
@@ -77,13 +71,13 @@ namespace DDD
         else
             BindTexture(nullptr);
         if (states.texture)
-            shader->setUniform("sf_samplers[0]", 0);
+            shader->setUniform("DDD_samplers[0]", 0);
 
         std::uint32_t offset = 0;
         for (std::uint32_t i = 0; T::componentCount(i) > 0 && i < attribLoc.size(); i++)
         {
-            GLCall(glEnableVertexAttribArray(attribLoc[i]));
-            GLCall(glVertexAttribPointer(attribLoc[i], T::componentCount(i), componentToGLtype(T::componentType(i)),
+            GLCall(glEnableVertexAttribArray(attribLoc.at(i)));
+            GLCall(glVertexAttribPointer(attribLoc.at(i), T::componentCount(i), componentToGLtype(T::componentType(i)),
                 GL_FALSE, sizeof(T), reinterpret_cast<const void*>(offset)));
             offset += T::componentCount(i) * componentToGLsize(T::componentType(i));
         }
@@ -101,5 +95,7 @@ namespace DDD
         {
             GLCall(glDisableVertexAttribArray(attribLoc[i]));
         }
+
+        GLCall(glBindVertexArray(0));
     }
 }

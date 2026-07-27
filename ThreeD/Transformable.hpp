@@ -15,18 +15,18 @@ namespace DDD
         Transformable3D();
 		virtual ~Transformable3D() = default;
 
-        void setPosition(const sf::Vector3f& position);
-        void setRotation(const sf::Vector3f& angle);
-        void setScale(const sf::Vector3f& scale);
-        void setOrigin(const sf::Vector3f& origin);
+        void setPosition(sf::Vector3f position);
+        void setRotation(sf::Vector3f angle);
+        void setScale(sf::Vector3f scale);
+        void setOrigin(sf::Vector3f origin);
 
         const sf::Vector3f& getPosition() const;
         const sf::Vector3f& getRotation() const;
         const sf::Vector3f& getScale() const;
         const sf::Vector3f& getOrigin() const;
-        void move(const sf::Vector3f& offset);
-        void rotate(const sf::Vector3f& angle);
-        void scale(const sf::Vector3f& scale);
+        void move(sf::Vector3f offset);
+        void rotate(sf::Vector3f angle);
+        void scale(sf::Vector3f scale);
         const Transform3D& getTransform() const;
     };
 }

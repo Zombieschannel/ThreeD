@@ -3,7 +3,7 @@
 #include "glad/glad.h"
 namespace
 {
-    std::uint32_t drawTypeToGLtype(DDD::DrawType type)
+    std::uint32_t drawTypeToGLtype(const DDD::DrawType type)
     {
         switch (type)
         {
@@ -24,7 +24,7 @@ namespace DDD
     {
         GLCall(glGenBuffers(1, &ID));
     }
-    IndexBuffer3D::IndexBuffer3D(std::uint32_t vertexCount)
+    IndexBuffer3D::IndexBuffer3D(const std::uint32_t vertexCount)
     {
         GLCall(glGenBuffers(1, &ID));
         indices.resize(vertexCount);
@@ -41,23 +41,23 @@ namespace DDD
     {
         return indices.size();
     }
-    std::uint16_t& IndexBuffer3D::operator[](std::uint32_t index)
+    std::uint16_t& IndexBuffer3D::operator[](const std::uint32_t index)
     {
-        return indices[index];
+        return indices.at(index);
     }
-    const std::uint16_t& IndexBuffer3D::operator[](std::uint32_t index) const
+    const std::uint16_t& IndexBuffer3D::operator[](const std::uint32_t index) const
     {
-        return indices[index];
+        return indices.at(index);
     }
     void IndexBuffer3D::clear()
     {
         indices.clear();
     }
-    void IndexBuffer3D::resize(std::uint32_t indexCount)
+    void IndexBuffer3D::resize(const std::uint32_t indexCount)
     {
         indices.resize(indexCount);
     }
-    void IndexBuffer3D::append(std::uint16_t index)
+    void IndexBuffer3D::append(const std::uint16_t index)
     {
         indices.push_back(index);
     }

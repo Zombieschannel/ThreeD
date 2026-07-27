@@ -2,66 +2,66 @@
 
 namespace DDD
 {
-    const float dot(const sf::Vector3f vec1, const sf::Vector3f vec2)
+	std::array<float, 9> getMat3(const Transform3D& m)
 	{
-		return vec1.x * vec2.x + vec1.y * vec2.y + vec1.z * vec2.z;
+		const float* data = m.getMatrix();
+		return {
+			data[0], data[1], data[2],
+			data[4], data[5], data[6],
+			data[8], data[9], data[10]
+		};
+	}
+	std::array<float, 9> getInverseMat3(const std::array<float, 9>& m)
+	{
+		const float det = m[0] * (m[4] * m[8] - m[5] * m[7]) -
+						  m[1] * (m[3] * m[8] - m[5] * m[6]) +
+						  m[2] * (m[3] * m[7] - m[4] * m[6]);
+
+		if (det != 0.f)
+		{
+			return {
+				(m[4] * m[8] - m[5] * m[7]) / det,
+			   -(m[1] * m[8] - m[2] * m[7]) / det,
+				(m[1] * m[5] - m[2] * m[4]) / det,
+			   -(m[3] * m[8] - m[5] * m[6]) / det,
+				(m[0] * m[8] - m[2] * m[6]) / det,
+			   -(m[0] * m[5] - m[2] * m[3]) / det,
+				(m[3] * m[7] - m[4] * m[6]) / det,
+			   -(m[0] * m[7] - m[1] * m[6]) / det,
+				(m[0] * m[4] - m[1] * m[3]) / det
+			};
+		}
+
+		return std::array{1.f, 0.f, 0.f,
+						  0.f, 1.f, 0.f,
+						  0.f, 0.f, 1.f};
+	}
+	std::array<float, 9> getTransposedMat3(const std::array<float, 9>& m)
+	{
+		return {
+			m[0], m[3], m[6],
+			m[1], m[4], m[7],
+			m[2], m[5], m[8]
+		};
 	}
 
-    const float dot(const sf::Vector2f vec1, const sf::Vector2f vec2)
+    Transform3D lookAt(const sf::Vector3f eye, const sf::Vector3f center, const sf::Vector3f up)
 	{
-		return vec1.x * vec2.x + vec1.y * vec2.y;
-	}
-
-    const sf::Vector3f cross(const sf::Vector3f vec1, const sf::Vector3f vec2)
-	{
-		return sf::Vector3f(vec1.y * vec2.z - vec1.z * vec2.y, 
-							vec1.z * vec2.x - vec1.x * vec2.z,
-							vec1.x * vec2.y - vec1.y * vec2.x);
-	}
-
-    const float length(const sf::Vector3f vec1)
-	{
-		return std::sqrt(vec1.x * vec1.x + vec1.y * vec1.y + vec1.z * vec1.z);
-	}
-
-    const float length(const sf::Vector2f vec1)
-	{
-		return std::sqrt(vec1.x * vec1.x + vec1.y * vec1.y);
-	}
-
-    const sf::Vector3f normalize(const sf::Vector3f vec1)
-	{
-		float len = length(vec1);
-		if (len == 0.f)
-			return sf::Vector3f();
-		return sf::Vector3f(vec1.x / len, vec1.y / len, vec1.z / len);
-	}
-
-    const sf::Vector2f normalize(const sf::Vector2f vec1)
-	{
-		float len = length(vec1);
-		if (len == 0.f)
-			return sf::Vector2f();
-		return sf::Vector2f(vec1.x / len, vec1.y / len);
-	}
-
-    const Transform3D lookAt(const sf::Vector3f eye, const sf::Vector3f center, const sf::Vector3f up)
-	{
-		sf::Vector3f f(normalize(center - eye));
-		sf::Vector3f s(normalize(cross(f, up)));
-		sf::Vector3f u(cross(s, f));
+		const sf::Vector3f f((center - eye).normalized());
+		const sf::Vector3f s(f.cross(up).normalized());
+		const sf::Vector3f u(s.cross(f));
 
 		return Transform3D(
-			s.x, s.y, s.z, -dot(s, eye),
-			u.x, u.y, u.z, -dot(u, eye),
-			-f.x, -f.y, -f.z, dot(f, eye),
+			s.x, s.y, s.z, -s.dot(eye),
+			u.x, u.y, u.z, -u.dot(eye),
+			-f.x, -f.y, -f.z, f.dot(eye),
 			0.f, 0.f, 0.f, 1.f
 		);
 	}
-    const sf::Vector3f calculateNormal(const sf::Vector3f point1, const sf::Vector3f point2, const sf::Vector3f point3)
+    sf::Vector3f calculateNormal(const sf::Vector3f point1, const sf::Vector3f point2, const sf::Vector3f point3)
 	{
-		sf::Vector3f A = point2 - point1;
-		sf::Vector3f B = point3 - point1;
+		const sf::Vector3f A = point2 - point1;
+		const sf::Vector3f B = point3 - point1;
 		sf::Vector3f N;
 		N.x = A.y * B.z - A.z * B.y;
 		N.y = A.z * B.x - A.x * B.z;
